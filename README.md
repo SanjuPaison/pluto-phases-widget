@@ -2,53 +2,71 @@
 
 Two parts, hosted separately:
 
-1. **`pluto-engine.js` + `data/`** — the actual astrology engine and its data
-   files (natal ephemeris, transiting Pluto positions, the 75 interpretation
-   texts). These need to live on a real URL that supports CORS. **GitHub
-   Pages** is the easiest free option.
-2. **`nicepage-block.html`** — the parchment-styled form + results UI you
-   paste directly into a Nicepage "Embed Code" block. It stays on your
-   Nicepage page; it only reaches out (in the background) to fetch the files
-   above and to OpenStreetMap for place lookups. Visitors never leave your
-   site.
+1. **`index.html`, `pluto-engine.js`, `ephemeris.json`, `pluto.json`,
+   `interpretations.json`** — the whole widget (parchment-styled form,
+   results, and the astrology engine + data behind it) as one complete,
+   self-contained page. These five files need to live on a real URL.
+   **GitHub Pages** is the easiest free option. They all sit flat, side by
+   side, in one repo — no folders needed, so this works fine from a phone
+   or tablet.
+2. **`nicepage-iframe-snippet.html`** — a tiny plain HTML snippet (just an
+   `<iframe>`, **no `<script>` tag**) that you paste into a Nicepage "Embed
+   Code" block. It loads `index.html` from GitHub Pages inside the iframe.
+   Because it contains no script tag, it works on Nicepage's free tier —
+   only inline `<script>` in the code box requires the premium license, and
+   an iframe sidesteps that entirely. Visitors stay on your Nicepage page;
+   the iframe is just a framed window showing the GitHub-hosted page.
 
-## Step 1 — Publish the engine + data to GitHub Pages
+## Step 1 — Publish the widget to GitHub Pages
 
 1. Create a new **public** GitHub repo, e.g. `pluto-phases-widget`.
-2. Upload these files/folders from this delivery, preserving structure:
+2. Go to **Add file → Upload files**.
+3. Tap **choose your files** and select all five files at once:
+   - `index.html`
    - `pluto-engine.js`
-   - `data/ephemeris.json`
-   - `data/pluto.json`
-   - `data/interpretations.json`
-3. In the repo, go to **Settings → Pages**, set:
+   - `ephemeris.json`
+   - `pluto.json`
+   - `interpretations.json`
+   (No dragging needed — the file picker works fine on a tablet. Just make
+   sure all five land in the repo root, not inside any folder.)
+4. Commit the upload.
+5. Go to **Settings → Pages**, set:
    - Source: `Deploy from a branch`
    - Branch: `main` / root
-4. Save. GitHub will give you a URL like:
+6. Save. GitHub will give you a URL like:
    `https://YOUR-GITHUB-USERNAME.github.io/pluto-phases-widget/`
-   (it can take a minute or two to go live the first time).
-5. Confirm it works by visiting
-   `https://YOUR-GITHUB-USERNAME.github.io/pluto-phases-widget/data/interpretations.json`
-   in a browser — you should see raw JSON, not a 404.
+   (can take a minute or two to go live the first time).
+7. Confirm it works by visiting that URL directly in a browser — you should
+   see the full parchment-styled widget, fully working, on its own page.
 
-## Step 2 — Wire the Nicepage block to that URL
+## Step 2 — Wire the Nicepage iframe to that URL
 
-1. Open `nicepage-block.html` in a text editor.
-2. Near the bottom, find this line:
-   ```js
-   var GITHUB_PAGES_BASE_URL = "https://YOUR-GITHUB-USERNAME.github.io/pluto-phases-widget/";
-   ```
-3. Replace it with your actual URL from Step 1 (keep the trailing slash).
-4. Save.
+1. Open `nicepage-iframe-snippet.html` in a text editor (even a notes app
+   that can edit plain text works, or GitHub's own web editor).
+2. Find the `src="..."` line and replace the placeholder URL with your
+   actual GitHub Pages URL from Step 1 (keep the trailing slash).
+3. Save.
 
 ## Step 3 — Add it to your Nicepage site
 
 1. In the Nicepage editor, add an **Embed Code / HTML Code** block where you
    want the widget to appear.
-2. Paste the entire contents of `nicepage-block.html` into that block.
+2. Paste the entire contents of `nicepage-iframe-snippet.html` into that
+   block (it's short — just one `<iframe>` tag, no script).
 3. Publish the site.
 
-That's it — no server of your own, no API keys, nothing to maintain besides
-those four files on GitHub.
+That's it — no server of your own, no API keys, no premium license needed,
+nothing to maintain besides the five files on GitHub.
+
+### If the fixed iframe height doesn't quite fit
+
+The snippet uses a fixed `height:1900px` since resizing an iframe to fit its
+content automatically requires a small script on the *parent* (Nicepage)
+page too — which runs into the same premium-license wall. A fixed height
+with the iframe's own internal scrollbar (the default browser behavior) is
+the simplest workaround. If 1900px leaves too much or too little space,
+just adjust that one number in the `style="..."` attribute — no other
+changes needed.
 
 ## What the widget does
 
@@ -79,8 +97,7 @@ those four files on GitHub.
 - **Time zone**: the widget asks the visitor to pick their birth UTC offset
   from a dropdown rather than inferring it, since reliably resolving
   historical local time zones (including old DST rules) client-side without
-  a paid API isn't practical here. This matches the offset assumption
-  already used by the underlying birth-chart engine.
+  a paid API isn't practical here.
 - **No AI**: matching the typed description to the most relevant transit is
   done with a plain keyword dictionary (see `KEYWORDS` in
   `pluto-engine.js`), not language understanding. It's free and instant,

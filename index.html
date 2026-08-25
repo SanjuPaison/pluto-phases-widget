@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pluto Phases — What Was Happening?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #efe4c7; }
+</style>
+</head>
+<body>
+<div id="pluto-phases-widget" class="ppw-root">
+
+  <style>
+    #pluto-phases-widget.ppw-root {
+      --ppw-parchment: #efe4c7;
+      --ppw-parchment-dark: #ddc79a;
+      --ppw-parchment-shadow: #c9ae78;
+      --ppw-ink: #2b2016;
+      --ppw-ink-soft: #574530;
+      --ppw-wine: #7a2036;
+      --ppw-wine-dark: #571628;
+      --ppw-gold: #a9822c;
+      --ppw-gold-light: #c9a24f;
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 3rem;
+      background:
+        radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 60%),
+        var(--ppw-parchment);
+      background-color: var(--ppw-parchment);
+      color: var(--ppw-ink);
+      border: 1px solid var(--ppw-parchment-shadow);
+      box-shadow: 0 0 0 6px var(--ppw-parchment), 0 8px 30px rgba(43,32,22,0.35);
+      font-family: 'EB Garamond', Georgia, serif;
+      line-height: 1.55;
+      position: relative;
+    }
+    #pluto-phases-widget.ppw-root * { box-sizing: border-box; }
+    #pluto-phases-widget .ppw-eyebrow {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      color: var(--ppw-wine);
+      text-align: center;
+      margin: 0 0 0.35rem;
+    }
+    #pluto-phases-widget h2.ppw-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 600;
+      font-size: 2.4rem;
+      text-align: center;
+      margin: 0 0 0.25rem;
+      color: var(--ppw-ink);
+    }
+    #pluto-phases-widget .ppw-sub {
+      text-align: center;
+      font-style: italic;
+      color: var(--ppw-ink-soft);
+      max-width: 560px;
+      margin: 0 auto 2rem;
+      font-size: 1.05rem;
+    }
+    #pluto-phases-widget .ppw-divider {
+      border: 0;
+      height: 1px;
+      margin: 1.75rem 0;
+      background: linear-gradient(to right, transparent, var(--ppw-gold), transparent);
+    }
+    #pluto-phases-widget fieldset {
+      border: 1px solid var(--ppw-parchment-shadow);
+      border-radius: 2px;
+      padding: 1rem 1.25rem 1.25rem;
+      margin: 0 0 1.25rem;
+    }
+    #pluto-phases-widget legend {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: var(--ppw-wine);
+      padding: 0 0.5rem;
+      letter-spacing: 0.02em;
+    }
+    #pluto-phases-widget .ppw-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      margin-bottom: 0.9rem;
+    }
+    #pluto-phases-widget .ppw-field { flex: 1 1 180px; }
+    #pluto-phases-widget .ppw-field.ppw-wide { flex: 1 1 100%; }
+    #pluto-phases-widget label {
+      display: block;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ppw-ink-soft);
+      margin-bottom: 0.3rem;
+    }
+    #pluto-phases-widget input[type="date"],
+    #pluto-phases-widget input[type="time"],
+    #pluto-phases-widget input[type="text"],
+    #pluto-phases-widget input[type="number"],
+    #pluto-phases-widget select,
+    #pluto-phases-widget textarea {
+      width: 100%;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1rem;
+      padding: 0.5rem 0.6rem;
+      background: #fbf6e8;
+      border: 1px solid var(--ppw-parchment-shadow);
+      border-radius: 2px;
+      color: var(--ppw-ink);
+    }
+    #pluto-phases-widget input:focus,
+    #pluto-phases-widget select:focus,
+    #pluto-phases-widget textarea:focus {
+      outline: 2px solid var(--ppw-gold);
+      outline-offset: 1px;
+    }
+    #pluto-phases-widget textarea { resize: vertical; min-height: 4.5rem; }
+    #pluto-phases-widget .ppw-help {
+      font-size: 0.8rem;
+      color: var(--ppw-ink-soft);
+      margin-top: 0.3rem;
+      font-style: italic;
+    }
+    #pluto-phases-widget .ppw-checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.88rem;
+      color: var(--ppw-ink-soft);
+      margin-top: 0.4rem;
+    }
+    #pluto-phases-widget .ppw-radio-group { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+    #pluto-phases-widget .ppw-radio-group label {
+      display: flex; align-items: center; gap: 0.4rem;
+      text-transform: none; letter-spacing: 0; font-size: 0.95rem; color: var(--ppw-ink);
+      margin-bottom: 0;
+    }
+    #pluto-phases-widget .ppw-geo-row { display: flex; gap: 0.6rem; }
+    #pluto-phases-widget .ppw-geo-row input { flex: 1; }
+    #pluto-phases-widget button.ppw-geo-btn {
+      flex: 0 0 auto;
+      background: var(--ppw-ink);
+      color: var(--ppw-parchment);
+      border: none;
+      padding: 0 1rem;
+      border-radius: 2px;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      cursor: pointer;
+    }
+    #pluto-phases-widget button.ppw-geo-btn:hover { background: var(--ppw-wine); }
+    #pluto-phases-widget .ppw-geo-status { font-size: 0.82rem; margin-top: 0.35rem; min-height: 1.1em; }
+    #pluto-phases-widget .ppw-geo-status.ppw-ok { color: #3c5a2e; }
+    #pluto-phases-widget .ppw-geo-status.ppw-err { color: var(--ppw-wine); }
+
+    /* Wax seal submit button */
+    #pluto-phases-widget .ppw-submit-wrap { text-align: center; margin: 2rem 0 0.5rem; }
+    #pluto-phases-widget button.ppw-seal {
+      position: relative;
+      width: 148px; height: 148px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      background:
+        radial-gradient(circle at 35% 30%, var(--ppw-wine-dark) 0%, var(--ppw-wine) 55%, var(--ppw-wine-dark) 100%);
+      box-shadow:
+        0 6px 14px rgba(43,32,22,0.45),
+        inset 0 0 0 4px rgba(169,130,44,0.55),
+        inset 0 0 18px rgba(0,0,0,0.35);
+      color: var(--ppw-gold-light);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 0.95rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    #pluto-phases-widget button.ppw-seal:hover:not(:disabled) { transform: scale(1.04); }
+    #pluto-phases-widget button.ppw-seal:disabled { opacity: 0.6; cursor: wait; }
+    #pluto-phases-widget button.ppw-seal .ppw-seal-glyph {
+      display: block; font-size: 1.9rem; margin-bottom: 0.15rem; line-height: 1;
+    }
+
+    #pluto-phases-widget .ppw-error-box {
+      margin-top: 1rem;
+      padding: 0.8rem 1rem;
+      border: 1px solid var(--ppw-wine);
+      background: rgba(122,32,54,0.08);
+      color: var(--ppw-wine-dark);
+      font-size: 0.92rem;
+      border-radius: 2px;
+    }
+
+    /* Results */
+    #pluto-phases-widget .ppw-results {
+      margin-top: 2.25rem;
+      animation: ppw-fade-in 0.7s ease;
+    }
+    @keyframes ppw-fade-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    #pluto-phases-widget .ppw-results h3 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.5rem;
+      color: var(--ppw-wine);
+      border-bottom: 1px solid var(--ppw-parchment-shadow);
+      padding-bottom: 0.35rem;
+      margin: 1.6rem 0 0.75rem;
+    }
+    #pluto-phases-widget .ppw-era-banner {
+      text-align: center;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.15rem;
+      color: var(--ppw-ink);
+      padding: 0.9rem 1rem;
+      border: 1px solid var(--ppw-gold);
+      background: rgba(169,130,44,0.08);
+      border-radius: 2px;
+    }
+    #pluto-phases-widget .ppw-fallback-note {
+      font-size: 0.85rem;
+      font-style: italic;
+      color: var(--ppw-ink-soft);
+      margin-top: 0.5rem;
+    }
+    #pluto-phases-widget .ppw-luck-grid {
+      display: flex; flex-wrap: wrap; gap: 1rem;
+    }
+    #pluto-phases-widget .ppw-luck-card {
+      flex: 1 1 220px;
+      border: 1px solid var(--ppw-parchment-shadow);
+      background: rgba(255,255,255,0.25);
+      padding: 0.8rem 1rem;
+      border-radius: 2px;
+    }
+    #pluto-phases-widget .ppw-luck-card h4 {
+      margin: 0 0 0.4rem;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.05rem;
+    }
+    #pluto-phases-widget .ppw-luck-card.ppw-lucky h4 { color: #3c5a2e; }
+    #pluto-phases-widget .ppw-luck-card.ppw-unlucky h4 { color: var(--ppw-wine); }
+    #pluto-phases-widget .ppw-luck-card p { margin: 0.15rem 0; font-size: 0.92rem; }
+
+    #pluto-phases-widget .ppw-hit-card {
+      border: 1px solid var(--ppw-parchment-shadow);
+      background: rgba(255,255,255,0.3);
+      padding: 0.9rem 1.1rem;
+      border-radius: 2px;
+      margin-bottom: 0.9rem;
+    }
+    #pluto-phases-widget .ppw-hit-head {
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: var(--ppw-ink);
+    }
+    #pluto-phases-widget .ppw-hit-window {
+      font-size: 0.82rem;
+      color: var(--ppw-ink-soft);
+      font-style: italic;
+      margin-bottom: 0.5rem;
+    }
+    #pluto-phases-widget .ppw-hit-text { font-size: 0.97rem; }
+    #pluto-phases-widget .ppw-hit-text.ppw-clamped {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    #pluto-phases-widget button.ppw-expand {
+      background: none; border: none; color: var(--ppw-wine);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      cursor: pointer; padding: 0.3rem 0; font-size: 0.88rem;
+      text-decoration: underline;
+    }
+
+    /* CTA */
+    #pluto-phases-widget .ppw-cta {
+      margin-top: 2.5rem;
+      padding: 1.75rem 1.5rem;
+      text-align: center;
+      background: var(--ppw-ink);
+      color: var(--ppw-parchment);
+      border-radius: 2px;
+      position: relative;
+    }
+    #pluto-phases-widget .ppw-cta::before,
+    #pluto-phases-widget .ppw-cta::after {
+      content: "";
+      position: absolute; left: 1.25rem; right: 1.25rem; height: 1px;
+      background: var(--ppw-gold);
+    }
+    #pluto-phases-widget .ppw-cta::before { top: 6px; }
+    #pluto-phases-widget .ppw-cta::after { bottom: 6px; }
+    #pluto-phases-widget .ppw-cta h3 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.5rem;
+      color: var(--ppw-gold-light);
+      margin: 0.3rem 0 0.5rem;
+      border: none;
+    }
+    #pluto-phases-widget .ppw-cta p {
+      max-width: 520px; margin: 0 auto 1.1rem;
+      color: #e6dcc2;
+      font-size: 0.98rem;
+    }
+    #pluto-phases-widget a.ppw-cta-btn {
+      display: inline-block;
+      background: var(--ppw-gold);
+      color: var(--ppw-ink);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.7rem 1.6rem;
+      border-radius: 2px;
+    }
+    #pluto-phases-widget a.ppw-cta-btn:hover { background: var(--ppw-gold-light); }
+
+    #pluto-phases-widget .ppw-disclaimer {
+      margin-top: 1.75rem;
+      font-size: 0.75rem;
+      color: var(--ppw-ink-soft);
+      text-align: center;
+      line-height: 1.5;
+    }
+    #pluto-phases-widget .ppw-disclaimer a { color: var(--ppw-ink-soft); }
+
+    @media (max-width: 520px) {
+      #pluto-phases-widget button.ppw-seal { width: 120px; height: 120px; font-size: 0.8rem; }
+      #pluto-phases-widget h2.ppw-title { font-size: 1.9rem; }
+    }
+  </style>
+
+  <p class="ppw-eyebrow">Pluto Phases</p>
+  <h2 class="ppw-title">What Was Happening?</h2>
+  <p class="ppw-sub">Enter your birth details and a moment from your life. We'll trace which transiting Pluto pattern was active — the same system behind your full 75&#8209;page Transit Report.</p>
+
+  <form id="ppw-form">
+    <fieldset>
+      <legend>Your Birth</legend>
+      <div class="ppw-row">
+        <div class="ppw-field">
+          <label for="ppw-birth-date">Birth date</label>
+          <input type="date" id="ppw-birth-date" required min="1940-01-01" max="2060-12-31">
+        </div>
+        <div class="ppw-field">
+          <label for="ppw-birth-time">Birth time</label>
+          <input type="time" id="ppw-birth-time" value="12:00">
+          <div class="ppw-checkbox-row">
+            <input type="checkbox" id="ppw-time-unknown">
+            <label for="ppw-time-unknown" style="margin:0;text-transform:none;letter-spacing:0;">I don't know my exact birth time</label>
+          </div>
+        </div>
+      </div>
+      <div class="ppw-row">
+        <div class="ppw-field ppw-wide">
+          <label for="ppw-place">Birth place (city, country)</label>
+          <div class="ppw-geo-row">
+            <input type="text" id="ppw-place" placeholder="e.g. Kolkata, India" autocomplete="off">
+            <button type="button" class="ppw-geo-btn" id="ppw-geo-btn">Locate</button>
+          </div>
+          <div class="ppw-geo-status" id="ppw-geo-status"></div>
+        </div>
+      </div>
+      <div class="ppw-row">
+        <div class="ppw-field">
+          <label for="ppw-utc-offset">Time zone at birth (UTC offset)</label>
+          <select id="ppw-utc-offset"></select>
+          <div class="ppw-help">The offset in effect at your birth location on that date (include daylight saving if it applied). If unsure, use your location's standard offset.</div>
+        </div>
+        <div class="ppw-field">
+          <label>Reading is governed by</label>
+          <div class="ppw-radio-group" style="margin-top:0.55rem;">
+            <label><input type="radio" name="ppw-person-point" value="Sun" checked> Sun sign</label>
+            <label><input type="radio" name="ppw-person-point" value="Moon"> Moon sign</label>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>The Event</legend>
+      <div class="ppw-row">
+        <div class="ppw-field">
+          <label for="ppw-event-date">Event date</label>
+          <input type="date" id="ppw-event-date" required min="1940-01-01" max="2060-12-31">
+        </div>
+        <div class="ppw-field ppw-wide">
+          <label for="ppw-event-desc">Briefly, what happened?</label>
+          <textarea id="ppw-event-desc" placeholder="e.g. I got engaged, or I was let go from my job, or I moved abroad..."></textarea>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="ppw-submit-wrap">
+      <button type="submit" class="ppw-seal" id="ppw-submit">
+        <span class="ppw-seal-glyph">&#9807;</span>
+        Reveal
+      </button>
+    </div>
+    <div id="ppw-error" style="display:none;" class="ppw-error-box"></div>
+  </form>
+
+  <div id="ppw-results"></div>
+
+  <p class="ppw-disclaimer">
+    For entertainment and personal reflection only — not scientifically validated, not a
+    predictor of real outcomes, and not a substitute for professional medical, legal, or
+    financial advice.
+  </p>
+
+</div>
+
+<script src="pluto-engine.js"></script>
+<script>
+
+(function () {
+  // pluto-engine.js is loaded via a normal <script src="pluto-engine.js">
+  // tag earlier in this same page, so it is already available by the time
+  // this script runs -- no dynamic script injection needed.
+  function loadEngineScript(cb) { cb(); }
+
+  var root = document.getElementById("pluto-phases-widget");
+  var form = document.getElementById("ppw-form");
+  var resultsEl = document.getElementById("ppw-results");
+  var errorEl = document.getElementById("ppw-error");
+  var submitBtn = document.getElementById("ppw-submit");
+  var geoBtn = document.getElementById("ppw-geo-btn");
+  var geoStatus = document.getElementById("ppw-geo-status");
+  var timeUnknownBox = document.getElementById("ppw-time-unknown");
+  var timeInput = document.getElementById("ppw-birth-time");
+  var utcSelect = document.getElementById("ppw-utc-offset");
+
+  var resolvedLat = null, resolvedLon = null;
+
+  // Populate UTC offset dropdown
+  var OFFSETS = [-12,-11,-10,-9.5,-9,-8,-7,-6,-5,-4.5,-4,-3.5,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,5.75,6,6.5,7,8,8.75,9,9.5,10,10.5,11,12,12.75,13,14];
+  OFFSETS.forEach(function (o) {
+    var opt = document.createElement("option");
+    opt.value = o;
+    var sign = o >= 0 ? "+" : "";
+    opt.textContent = "UTC" + sign + o;
+    if (o === 5.5) opt.selected = true;
+    utcSelect.appendChild(opt);
+  });
+
+  timeUnknownBox.addEventListener("change", function () {
+    timeInput.disabled = timeUnknownBox.checked;
+    if (timeUnknownBox.checked) timeInput.value = "12:00";
+  });
+
+  geoBtn.addEventListener("click", function () {
+    var place = document.getElementById("ppw-place").value.trim();
+    if (!place) { geoStatus.textContent = "Enter a place first."; geoStatus.className = "ppw-geo-status ppw-err"; return; }
+    geoStatus.textContent = "Searching...";
+    geoStatus.className = "ppw-geo-status";
+    loadEngineScript(function () {
+      window.PlutoPhasesEngine.geocodePlace(place).then(function (loc) {
+        resolvedLat = loc.latitude; resolvedLon = loc.longitude;
+        geoStatus.textContent = "Found: " + loc.displayName + " (" + loc.latitude.toFixed(3) + ", " + loc.longitude.toFixed(3) + ")";
+        geoStatus.className = "ppw-geo-status ppw-ok";
+      }).catch(function (err) {
+        resolvedLat = null; resolvedLon = null;
+        geoStatus.textContent = err.message || "Could not find that place.";
+        geoStatus.className = "ppw-geo-status ppw-err";
+      });
+    });
+  });
+
+  function showError(msg) {
+    errorEl.textContent = msg;
+    errorEl.style.display = "block";
+  }
+  function clearError() { errorEl.style.display = "none"; errorEl.textContent = ""; }
+
+  function fmtDate(d) {
+    return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  }
+
+  function renderResults(r) {
+    var html = "";
+    html += '<h3>The Era</h3>';
+    html += '<div class="ppw-era-banner">You were living through the <strong>' + r.era.sign + ' Pluto Phase</strong> (' +
+      r.era.startYear + '&ndash;' + r.era.endYear + ') on ' + fmtDate(r.eventDate) + '.</div>';
+
+    html += '<h3>The Pattern in Effect</h3>';
+    html += '<p>As a <strong>' + r.personSign + '</strong>, this era places <strong>' + r.houses.firstHouseSign +
+      '</strong> in your 1st house and <strong>' + r.houses.tenthHouseSign + '</strong> in your 10th house. ' +
+      r.housesIntro + '</p>';
+
+    if (r.luck) {
+      html += '<h3>Book of Luck for This Era</h3>';
+      html += '<div class="ppw-luck-grid">';
+      html += '<div class="ppw-luck-card ppw-lucky"><h4>Favorable</h4>' +
+        '<p>Colors: ' + r.luck.lucky.colors.join(", ") + '</p>' +
+        '<p>Numbers: ' + r.luck.lucky.numbers.join(", ") + '</p>' +
+        '<p>People: ' + r.luck.lucky.people.join(", ") + '</p></div>';
+      html += '<div class="ppw-luck-card ppw-unlucky"><h4>Unfavorable</h4>' +
+        '<p>Colors: ' + r.luck.unlucky.colors.join(", ") + '</p>' +
+        '<p>Numbers: ' + r.luck.unlucky.numbers.join(", ") + '</p>' +
+        '<p>People: ' + r.luck.unlucky.people.join(", ") + '</p></div>';
+      html += '</div>';
+    }
+
+    html += '<h3>What Was Active</h3>';
+    if (r.usedFallback) {
+      html += '<p class="ppw-fallback-note">No aspect window fell exactly on this date &mdash; showing the nearest exact hits instead.</p>';
+    }
+    r.hits.forEach(function (h, i) {
+      var uid = "ppw-hit-" + i;
+      html += '<div class="ppw-hit-card">';
+      html += '<div class="ppw-hit-head">' + fmtDate(h.date) + ' &mdash; Pluto&minus;135&deg; ' + h.aspectLabel + ' natal ' + h.natalPointName + '</div>';
+      html += '<div class="ppw-hit-window">Active window: ' + fmtDate(h.windowStartDate) + ' to ' + fmtDate(h.windowEndDate) +
+        ' (date may shift roughly &plusmn;' + h.uncertaintyDays + ' days due to birth-time precision)</div>';
+      html += '<div class="ppw-hit-text ppw-clamped" id="' + uid + '">' + h.interpretation + '</div>';
+      html += '<button type="button" class="ppw-expand" data-target="' + uid + '">Read the full reading</button>';
+      html += '</div>';
+    });
+
+    html += '<div class="ppw-cta">' +
+      '<h3>This Is One Page of Your Phases</h3>' +
+      '<p>Your complete life carries dozens of these windows &mdash; every exact Pluto transit across every era, ' +
+      'fully mapped. The full Transit Report lays out all of it, 75 pages deep.</p>' +
+      '<a class="ppw-cta-btn" href="https://lifeprediction.net" target="_blank" rel="noopener">Order Your Full Transit Report</a>' +
+      '</div>';
+
+    resultsEl.innerHTML = html;
+
+    resultsEl.querySelectorAll(".ppw-expand").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var target = document.getElementById(btn.getAttribute("data-target"));
+        target.classList.toggle("ppw-clamped");
+        btn.textContent = target.classList.contains("ppw-clamped") ? "Read the full reading" : "Show less";
+      });
+    });
+
+    resultsEl.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    clearError();
+    resultsEl.innerHTML = "";
+
+    var birthDateVal = document.getElementById("ppw-birth-date").value;
+    var eventDateVal = document.getElementById("ppw-event-date").value;
+    if (!birthDateVal || !eventDateVal) { showError("Please provide both a birth date and an event date."); return; }
+    if (resolvedLat === null || resolvedLon === null) {
+      showError("Please locate your birth place using the \"Locate\" button before revealing your reading.");
+      return;
+    }
+
+    var timeVal = timeUnknownBox.checked ? "12:00" : (timeInput.value || "12:00");
+    var bParts = birthDateVal.split("-").map(Number);
+    var eParts = eventDateVal.split("-").map(Number);
+    var tParts = timeVal.split(":").map(Number);
+    var personPoint = document.querySelector('input[name="ppw-person-point"]:checked').value;
+
+    var input = {
+      birthYear: bParts[0], birthMonth: bParts[1], birthDay: bParts[2],
+      birthHour: tParts[0], birthMinute: tParts[1],
+      utcOffsetHours: parseFloat(utcSelect.value),
+      latitude: resolvedLat, longitude: resolvedLon,
+      eventYear: eParts[0], eventMonth: eParts[1], eventDay: eParts[2],
+      description: document.getElementById("ppw-event-desc").value || "",
+      personPoint: personPoint,
+      offsetDegrees: 135, orbDegrees: 3
+    };
+
+    submitBtn.disabled = true;
+    submitBtn.querySelector(".ppw-seal-glyph") && (submitBtn.querySelector(".ppw-seal-glyph").textContent = "\u231B");
+
+    loadEngineScript(function () {
+      window.PlutoPhasesEngine.loadData().then(function (data) {
+        try {
+          var r = window.PlutoPhasesEngine.explainEvent(input, data);
+          renderResults(r);
+        } catch (err) {
+          showError(err.message || "Something went wrong computing your reading.");
+        }
+      }).catch(function () {
+        showError("Could not load the astrological data. Please check your connection and try again.");
+      }).then(function () {
+        submitBtn.disabled = false;
+        submitBtn.querySelector(".ppw-seal-glyph") && (submitBtn.querySelector(".ppw-seal-glyph").textContent = "\u2647");
+      });
+    });
+  });
+})();
+
+</script>
+</body>
+</html>
