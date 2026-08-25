@@ -1,3 +1,4 @@
+
 /*!
  * Pluto Phases — Event Explainer Engine
  * Ports the natal-chart, transiting-aspect, Pluto Phase era, and Book of Luck
@@ -643,9 +644,9 @@
   function loadData() {
     if (_dataPromise) return _dataPromise;
     _dataPromise = Promise.all([
-      fetch(BASE_URL + "data/ephemeris.json").then(function (r) { return r.json(); }),
-      fetch(BASE_URL + "data/pluto.json").then(function (r) { return r.json(); }),
-      fetch(BASE_URL + "data/interpretations.json").then(function (r) { return r.json(); })
+      fetch(BASE_URL + "ephemeris.json").then(function (r) { return r.json(); }),
+      fetch(BASE_URL + "pluto.json").then(function (r) { return r.json(); }),
+      fetch(BASE_URL + "interpretations.json").then(function (r) { return r.json(); })
     ]).then(function (results) {
       return { ephemeris: results[0], pluto: results[1], interpretations: results[2] };
     });
