@@ -374,11 +374,12 @@
           <div class="ppw-help">The offset in effect at your birth location on that date (include daylight saving if it applied). If unsure, use your location's standard offset.</div>
         </div>
         <div class="ppw-field">
-          <label>Reading is governed by</label>
+          <label>Gender</label>
           <div class="ppw-radio-group" style="margin-top:0.55rem;">
-            <label><input type="radio" name="ppw-person-point" value="Sun" checked> Sun sign</label>
-            <label><input type="radio" name="ppw-person-point" value="Moon"> Moon sign</label>
+            <label><input type="radio" name="ppw-gender" value="Male" checked> Male</label>
+            <label><input type="radio" name="ppw-gender" value="Female"> Female</label>
           </div>
+          <div class="ppw-help">Determines which point drives the Pluto Phase house and Book of Luck reading &mdash; Sun for male, Moon for female (matching the app and report).</div>
         </div>
       </div>
     </fieldset>
@@ -559,7 +560,8 @@
     var bParts = birthDateVal.split("-").map(Number);
     var eParts = eventDateVal.split("-").map(Number);
     var tParts = timeVal.split(":").map(Number);
-    var personPoint = document.querySelector('input[name="ppw-person-point"]:checked').value;
+    var gender = document.querySelector('input[name="ppw-gender"]:checked').value;
+    var personPoint = gender === "Male" ? "Sun" : "Moon";
 
     var input = {
       birthYear: bParts[0], birthMonth: bParts[1], birthDay: bParts[2],
