@@ -39,6 +39,42 @@ Two parts, hosted separately:
 7. Confirm it works by visiting that URL directly in a browser — you should
    see the full parchment-styled widget, fully working, on its own page.
 
+## Step 1b — Set up EmailJS so purchase interest gets sent to you
+
+When a visitor selects the **Transit Report** and/or **Consultation** offer
+and taps Continue, the widget emails you their full birth details, event,
+and computed reading — this is what lets you follow up on real leads. It
+uses [EmailJS](https://www.emailjs.com) (free tier: 200 emails/month), so no
+backend or API key is exposed publicly.
+
+1. Create a free account at emailjs.com.
+2. Add an **Email Service** (e.g. connect your Gmail) — note the **Service
+   ID**.
+3. Create an **Email Template** with a subject like `New Pluto Phases lead:
+   {{interest}}` and a body that just prints `{{summary}}` — note the
+   **Template ID**.
+4. Under **Account → API Keys**, copy your **Public Key**.
+5. Open `index.html`, find these three lines near the bottom script block,
+   and fill them in:
+   ```js
+   var EMAILJS_PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY";
+   var EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
+   var EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID";
+   ```
+6. Save and re-upload `index.html` to GitHub (overwrite).
+
+**If you skip this step**, the widget still works — visitors can still open
+the Report/Consultation/Kindle links — it just won't be able to email you
+their details automatically, and it tells the visitor to mention their
+details manually instead. The Kindle eBooks link never needs this, since
+it's just a storefront link with no personal data involved.
+
+**Note on the two JotForm links**: the Report and Consultation offers were
+given the same JotForm URL — the widget uses it as-is for both. If you'd
+rather send visitors to two different forms, just update the `url` values
+for `report` and `consultation` inside the `OFFERS` object near the top of
+the same script block.
+
 ## Step 2 — Wire the Nicepage iframe to that URL
 
 1. Open `nicepage-iframe-snippet.html` in a text editor (even a notes app
@@ -111,3 +147,11 @@ changes needed.
 - **Not independently re-verified against a live ephemeris** (e.g. JPL
   Horizons) in this session — see the original project handoff docs for
   ephemeris provenance.
+- **Lead email delivery depends on EmailJS being configured** (Step 1b). If
+  it isn't set up, the widget degrades gracefully — links still work, the
+  visitor just gets a note asking them to mention their details manually on
+  the next page.
+- **Never tested in a real browser** — engine logic was smoke-tested with
+  Node.js, and the HTML/JS were checked for syntax errors and dangling
+  element references, but the actual rendering, form flow, and iframe
+  behavior haven't been confirmed in a live browser yet.

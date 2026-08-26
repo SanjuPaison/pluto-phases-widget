@@ -6,339 +6,430 @@
 <title>Pluto Phases — What Was Happening?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
-  html, body { margin: 0; padding: 0; background: #efe4c7; }
+  html { font-size: 19px; }
+  html, body {
+    margin: 0; padding: 0;
+    background: #d8c290;
+  }
+  #pluto-phases-widget.ppw-root {
+    --ppw-parchment: #e9dab3;
+    --ppw-parchment-dark: #cbaf7c;
+    --ppw-parchment-shadow: #a98c5c;
+    --ppw-ink: #2b2016;
+    --ppw-ink-soft: #55432c;
+    --ppw-wine: #7a2036;
+    --ppw-wine-dark: #571628;
+    --ppw-gold: #a9822c;
+    --ppw-gold-light: #d1a748;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 1.75rem 3.5rem;
+    color: var(--ppw-ink);
+    font-family: 'EB Garamond', Georgia, serif;
+    line-height: 1.6;
+    position: relative;
+    isolation: isolate;
+  }
+  /* ---- heavily aged parchment: layered stains, foxing, vignette, grain ---- */
+  #pluto-phases-widget.ppw-root::before {
+    content: "";
+    position: absolute; inset: 0; z-index: -2;
+    background-color: var(--ppw-parchment);
+    background-image:
+      radial-gradient(ellipse 900px 500px at 8% 6%, rgba(120,90,45,0.30), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 95% 12%, rgba(105,75,35,0.28), transparent 55%),
+      radial-gradient(ellipse 800px 600px at 90% 95%, rgba(120,90,45,0.32), transparent 55%),
+      radial-gradient(ellipse 600px 400px at 5% 92%, rgba(105,75,35,0.26), transparent 55%),
+      radial-gradient(circle 160px at 30% 40%, rgba(96,66,30,0.18), transparent 70%),
+      radial-gradient(circle 120px at 70% 65%, rgba(96,66,30,0.15), transparent 70%),
+      radial-gradient(circle 90px at 55% 20%, rgba(96,66,30,0.13), transparent 70%),
+      radial-gradient(ellipse 1400px 900px at 50% 50%, transparent 40%, rgba(70,50,20,0.35) 100%);
+  }
+  #pluto-phases-widget.ppw-root::after {
+    content: "";
+    position: absolute; inset: 0; z-index: -1;
+    opacity: 0.5;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0.35  0 0 0 0 0.27  0 0 0 0 0.14  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-repeat: repeat;
+  }
+  #pluto-phases-widget.ppw-root {
+    border: 1px solid var(--ppw-parchment-shadow);
+    box-shadow:
+      0 0 0 10px var(--ppw-parchment),
+      0 0 0 11px var(--ppw-gold),
+      0 14px 50px rgba(43,32,22,0.55);
+  }
+  #pluto-phases-widget.ppw-root * { box-sizing: border-box; }
+  #pluto-phases-widget .ppw-eyebrow {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+    color: var(--ppw-wine);
+    text-align: center;
+    margin: 0 0 0.4rem;
+  }
+  #pluto-phases-widget h2.ppw-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 700;
+    font-size: 3rem;
+    text-align: center;
+    margin: 0 0 0.3rem;
+    color: var(--ppw-ink);
+  }
+  #pluto-phases-widget .ppw-sub {
+    text-align: center;
+    font-style: italic;
+    color: var(--ppw-ink-soft);
+    max-width: 620px;
+    margin: 0 auto 2.25rem;
+    font-size: 1.2rem;
+  }
+  #pluto-phases-widget fieldset {
+    border: 1px solid var(--ppw-parchment-shadow);
+    border-radius: 2px;
+    padding: 1.1rem 1.4rem 1.4rem;
+    margin: 0 0 1.4rem;
+    background: rgba(255,255,255,0.12);
+  }
+  #pluto-phases-widget legend {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--ppw-wine);
+    padding: 0 0.6rem;
+    letter-spacing: 0.02em;
+  }
+  #pluto-phases-widget .ppw-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.1rem;
+    margin-bottom: 1.1rem;
+  }
+  #pluto-phases-widget .ppw-field { flex: 1 1 200px; }
+  #pluto-phases-widget .ppw-field.ppw-wide { flex: 1 1 100%; }
+  #pluto-phases-widget label {
+    display: block;
+    font-size: 0.92rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ppw-ink-soft);
+    margin-bottom: 0.35rem;
+  }
+  #pluto-phases-widget input[type="date"],
+  #pluto-phases-widget input[type="time"],
+  #pluto-phases-widget input[type="text"],
+  #pluto-phases-widget input[type="number"],
+  #pluto-phases-widget select,
+  #pluto-phases-widget textarea {
+    width: 100%;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.15rem;
+    padding: 0.55rem 0.7rem;
+    background: #fbf6e8;
+    border: 1px solid var(--ppw-parchment-shadow);
+    border-radius: 2px;
+    color: var(--ppw-ink);
+  }
+  #pluto-phases-widget input:focus,
+  #pluto-phases-widget select:focus,
+  #pluto-phases-widget textarea:focus {
+    outline: 2px solid var(--ppw-gold);
+    outline-offset: 1px;
+  }
+  #pluto-phases-widget textarea { resize: vertical; min-height: 5rem; }
+  #pluto-phases-widget .ppw-help {
+    font-size: 0.85rem;
+    color: var(--ppw-ink-soft);
+    margin-top: 0.3rem;
+    font-style: italic;
+  }
+  #pluto-phases-widget .ppw-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.95rem;
+    color: var(--ppw-ink-soft);
+    margin-top: 0.45rem;
+  }
+  #pluto-phases-widget .ppw-radio-group { display: flex; gap: 1.75rem; align-items: center; flex-wrap: wrap; }
+  #pluto-phases-widget .ppw-radio-group label {
+    display: flex; align-items: center; gap: 0.45rem;
+    text-transform: none; letter-spacing: 0; font-size: 1.1rem; color: var(--ppw-ink);
+    margin-bottom: 0;
+  }
+  #pluto-phases-widget input[type="radio"],
+  #pluto-phases-widget input[type="checkbox"] { width: 1.15em; height: 1.15em; }
+  #pluto-phases-widget .ppw-geo-row { display: flex; gap: 0.7rem; }
+  #pluto-phases-widget .ppw-geo-row input { flex: 1; }
+  #pluto-phases-widget button.ppw-geo-btn {
+    flex: 0 0 auto;
+    background: var(--ppw-ink);
+    color: var(--ppw-parchment);
+    border: none;
+    padding: 0 1.2rem;
+    border-radius: 2px;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    cursor: pointer;
+  }
+  #pluto-phases-widget button.ppw-geo-btn:hover { background: var(--ppw-wine); }
+  #pluto-phases-widget .ppw-geo-status { font-size: 0.9rem; margin-top: 0.4rem; min-height: 1.2em; }
+  #pluto-phases-widget .ppw-geo-status.ppw-ok { color: #3c5a2e; }
+  #pluto-phases-widget .ppw-geo-status.ppw-err { color: var(--ppw-wine); }
+
+  /* Seal submit button */
+  #pluto-phases-widget .ppw-submit-wrap { text-align: center; margin: 2.25rem 0 0.6rem; }
+  #pluto-phases-widget button.ppw-seal {
+    position: relative;
+    width: 172px; height: 172px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background:
+      radial-gradient(circle at 35% 30%, var(--ppw-wine-dark) 0%, var(--ppw-wine) 55%, var(--ppw-wine-dark) 100%);
+    box-shadow:
+      0 8px 18px rgba(43,32,22,0.5),
+      inset 0 0 0 5px rgba(169,130,44,0.55),
+      inset 0 0 22px rgba(0,0,0,0.35);
+    color: var(--ppw-gold-light);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.35rem;
+  }
+  #pluto-phases-widget button.ppw-seal:hover:not(:disabled) { transform: scale(1.04); }
+  #pluto-phases-widget button.ppw-seal:disabled { opacity: 0.65; cursor: wait; }
+  #pluto-phases-widget .ppw-seal-icon svg { width: 52px; height: 52px; display: block; }
+  #pluto-phases-widget .ppw-seal-icon.ppw-hidden { display: none; }
+  #pluto-phases-widget .ppw-seal-spin { animation: ppw-spin 1.4s linear infinite; }
+  @keyframes ppw-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  #pluto-phases-widget .ppw-error-box {
+    margin-top: 1.1rem;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid var(--ppw-wine);
+    background: rgba(122,32,54,0.1);
+    color: var(--ppw-wine-dark);
+    font-size: 1rem;
+    border-radius: 2px;
+  }
+
+  /* Results */
+  #pluto-phases-widget .ppw-results { margin-top: 2.5rem; animation: ppw-fade-in 0.7s ease; }
+  @keyframes ppw-fade-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  #pluto-phases-widget .ppw-results h3 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.7rem;
+    color: var(--ppw-wine);
+    border-bottom: 1px solid var(--ppw-parchment-shadow);
+    padding-bottom: 0.4rem;
+    margin: 1.8rem 0 0.85rem;
+  }
+  #pluto-phases-widget .ppw-era-banner {
+    text-align: center;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.3rem;
+    color: var(--ppw-ink);
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--ppw-gold);
+    background: rgba(169,130,44,0.1);
+    border-radius: 2px;
+  }
+
+  /* Dominant house section */
+  #pluto-phases-widget .ppw-house-dominant {
+    margin-top: 1.5rem;
+    padding: 1.6rem 1.6rem 1.8rem;
+    border: 2px solid var(--ppw-gold);
+    border-radius: 3px;
+    background:
+      radial-gradient(ellipse at top left, rgba(169,130,44,0.14), transparent 60%),
+      rgba(255,255,255,0.18);
+    box-shadow: 0 4px 18px rgba(43,32,22,0.18);
+  }
+  #pluto-phases-widget .ppw-house-dominant > h3 {
+    text-align: center;
+    border-bottom: none;
+    font-size: 2rem;
+    margin: 0 0 0.3rem;
+  }
+  #pluto-phases-widget .ppw-house-dominant > .ppw-house-lede {
+    text-align: center;
+    font-style: italic;
+    color: var(--ppw-ink-soft);
+    margin: 0 0 1.4rem;
+    font-size: 1.1rem;
+  }
+  #pluto-phases-widget .ppw-house-card {
+    border-top: 1px solid var(--ppw-parchment-shadow);
+    padding-top: 1.2rem;
+    margin-top: 1.2rem;
+  }
+  #pluto-phases-widget .ppw-house-card:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
+  #pluto-phases-widget .ppw-house-card h4 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.45rem;
+    color: var(--ppw-wine);
+    margin: 0 0 0.15rem;
+  }
+  #pluto-phases-widget .ppw-house-card .ppw-house-sign {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: var(--ppw-ink);
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+  #pluto-phases-widget .ppw-house-card p.ppw-trait { margin: 0 0 0.6rem; font-size: 1.08rem; }
+  #pluto-phases-widget .ppw-house-card blockquote.ppw-example {
+    margin: 0;
+    padding: 0.85rem 1.1rem;
+    border-left: 4px solid var(--ppw-gold);
+    background: rgba(169,130,44,0.08);
+    font-style: italic;
+    font-size: 1.08rem;
+    color: var(--ppw-ink-soft);
+  }
+  #pluto-phases-widget .ppw-house-card blockquote.ppw-example::before { content: "For example \u2014 "; font-style: normal; font-weight: 600; color: var(--ppw-wine); }
+
+  #pluto-phases-widget .ppw-fallback-note {
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--ppw-ink-soft);
+    margin-top: 0.5rem;
+  }
+  #pluto-phases-widget .ppw-luck-grid { display: flex; flex-wrap: wrap; gap: 1.1rem; }
+  #pluto-phases-widget .ppw-luck-card {
+    flex: 1 1 230px;
+    border: 1px solid var(--ppw-parchment-shadow);
+    background: rgba(255,255,255,0.25);
+    padding: 0.9rem 1.1rem;
+    border-radius: 2px;
+  }
+  #pluto-phases-widget .ppw-luck-card h4 { margin: 0 0 0.45rem; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.2rem; }
+  #pluto-phases-widget .ppw-luck-card.ppw-lucky h4 { color: #3c5a2e; }
+  #pluto-phases-widget .ppw-luck-card.ppw-unlucky h4 { color: var(--ppw-wine); }
+  #pluto-phases-widget .ppw-luck-card p { margin: 0.2rem 0; font-size: 1rem; }
+
+  #pluto-phases-widget .ppw-hit-card {
+    border: 1px solid var(--ppw-parchment-shadow);
+    background: rgba(255,255,255,0.3);
+    padding: 1rem 1.2rem;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+  }
+  #pluto-phases-widget .ppw-hit-head { font-weight: 600; margin-bottom: 0.45rem; color: var(--ppw-ink); font-size: 1.08rem; }
+  #pluto-phases-widget .ppw-hit-window { font-size: 0.88rem; color: var(--ppw-ink-soft); font-style: italic; margin-bottom: 0.55rem; }
+  #pluto-phases-widget .ppw-hit-text { font-size: 1.04rem; }
+  #pluto-phases-widget .ppw-hit-text.ppw-clamped { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  #pluto-phases-widget button.ppw-expand {
+    background: none; border: none; color: var(--ppw-wine);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    cursor: pointer; padding: 0.35rem 0; font-size: 0.95rem; text-decoration: underline;
+  }
+
+  /* Offers */
+  #pluto-phases-widget .ppw-offers {
+    margin-top: 2.75rem;
+    padding: 1.9rem 1.6rem;
+    background: var(--ppw-ink);
+    color: var(--ppw-parchment);
+    border-radius: 3px;
+    position: relative;
+  }
+  #pluto-phases-widget .ppw-offers::before,
+  #pluto-phases-widget .ppw-offers::after {
+    content: ""; position: absolute; left: 1.3rem; right: 1.3rem; height: 1px; background: var(--ppw-gold);
+  }
+  #pluto-phases-widget .ppw-offers::before { top: 7px; }
+  #pluto-phases-widget .ppw-offers::after { bottom: 7px; }
+  #pluto-phases-widget .ppw-offers h3 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.8rem;
+    color: var(--ppw-gold-light);
+    text-align: center;
+    margin: 0.3rem 0 0.3rem;
+    border: none;
+  }
+  #pluto-phases-widget .ppw-offers > p.ppw-offers-lede {
+    text-align: center; max-width: 560px; margin: 0 auto 1.5rem;
+    color: #e6dcc2; font-size: 1.05rem;
+  }
+  #pluto-phases-widget .ppw-offer-list { display: flex; flex-direction: column; gap: 0.9rem; margin-bottom: 1.6rem; }
+  #pluto-phases-widget .ppw-offer-item {
+    display: flex; gap: 0.85rem; align-items: flex-start;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid rgba(209,167,72,0.4);
+    border-radius: 2px;
+    background: rgba(255,255,255,0.05);
+  }
+  #pluto-phases-widget .ppw-offer-item input[type="checkbox"] { margin-top: 0.3rem; }
+  #pluto-phases-widget .ppw-offer-item label { text-transform: none; letter-spacing: 0; color: var(--ppw-parchment); margin: 0; cursor: pointer; }
+  #pluto-phases-widget .ppw-offer-item .ppw-offer-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.3rem; color: var(--ppw-gold-light); display: block; margin-bottom: 0.2rem;
+  }
+  #pluto-phases-widget .ppw-offer-item .ppw-offer-price { color: var(--ppw-gold-light); font-weight: 600; }
+  #pluto-phases-widget .ppw-offer-item .ppw-offer-desc { font-size: 0.95rem; color: #d9cfb2; display: block; margin-top: 0.15rem; }
+  #pluto-phases-widget .ppw-offers-submit-wrap { text-align: center; }
+  #pluto-phases-widget button.ppw-offers-btn {
+    background: var(--ppw-gold);
+    color: var(--ppw-ink);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    border: none;
+    padding: 0.8rem 1.9rem;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  #pluto-phases-widget button.ppw-offers-btn:hover { background: var(--ppw-gold-light); }
+  #pluto-phases-widget button.ppw-offers-btn:disabled { opacity: 0.6; cursor: wait; }
+  #pluto-phases-widget .ppw-offers-status { text-align: center; font-size: 0.9rem; margin-top: 0.9rem; color: #d9cfb2; min-height: 1.2em; }
+  #pluto-phases-widget .ppw-offers-links { display: flex; flex-direction: column; gap: 0.6rem; align-items: center; margin-top: 1rem; }
+  #pluto-phases-widget a.ppw-cta-btn {
+    display: inline-block;
+    background: var(--ppw-gold);
+    color: var(--ppw-ink);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 2px;
+  }
+  #pluto-phases-widget a.ppw-cta-btn:hover { background: var(--ppw-gold-light); }
+
+  #pluto-phases-widget .ppw-disclaimer {
+    margin-top: 2rem;
+    font-size: 0.82rem;
+    color: var(--ppw-ink-soft);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 560px) {
+    html { font-size: 17px; }
+    #pluto-phases-widget button.ppw-seal { width: 140px; height: 140px; }
+    #pluto-phases-widget h2.ppw-title { font-size: 2.3rem; }
+  }
 </style>
 </head>
 <body>
+
 <div id="pluto-phases-widget" class="ppw-root">
-
-  <style>
-    #pluto-phases-widget.ppw-root {
-      --ppw-parchment: #efe4c7;
-      --ppw-parchment-dark: #ddc79a;
-      --ppw-parchment-shadow: #c9ae78;
-      --ppw-ink: #2b2016;
-      --ppw-ink-soft: #574530;
-      --ppw-wine: #7a2036;
-      --ppw-wine-dark: #571628;
-      --ppw-gold: #a9822c;
-      --ppw-gold-light: #c9a24f;
-      max-width: 880px;
-      margin: 0 auto;
-      padding: 2.5rem 1.5rem 3rem;
-      background:
-        radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 60%),
-        var(--ppw-parchment);
-      background-color: var(--ppw-parchment);
-      color: var(--ppw-ink);
-      border: 1px solid var(--ppw-parchment-shadow);
-      box-shadow: 0 0 0 6px var(--ppw-parchment), 0 8px 30px rgba(43,32,22,0.35);
-      font-family: 'EB Garamond', Georgia, serif;
-      line-height: 1.55;
-      position: relative;
-    }
-    #pluto-phases-widget.ppw-root * { box-sizing: border-box; }
-    #pluto-phases-widget .ppw-eyebrow {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      font-size: 0.78rem;
-      color: var(--ppw-wine);
-      text-align: center;
-      margin: 0 0 0.35rem;
-    }
-    #pluto-phases-widget h2.ppw-title {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-weight: 600;
-      font-size: 2.4rem;
-      text-align: center;
-      margin: 0 0 0.25rem;
-      color: var(--ppw-ink);
-    }
-    #pluto-phases-widget .ppw-sub {
-      text-align: center;
-      font-style: italic;
-      color: var(--ppw-ink-soft);
-      max-width: 560px;
-      margin: 0 auto 2rem;
-      font-size: 1.05rem;
-    }
-    #pluto-phases-widget .ppw-divider {
-      border: 0;
-      height: 1px;
-      margin: 1.75rem 0;
-      background: linear-gradient(to right, transparent, var(--ppw-gold), transparent);
-    }
-    #pluto-phases-widget fieldset {
-      border: 1px solid var(--ppw-parchment-shadow);
-      border-radius: 2px;
-      padding: 1rem 1.25rem 1.25rem;
-      margin: 0 0 1.25rem;
-    }
-    #pluto-phases-widget legend {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-weight: 600;
-      font-size: 1.05rem;
-      color: var(--ppw-wine);
-      padding: 0 0.5rem;
-      letter-spacing: 0.02em;
-    }
-    #pluto-phases-widget .ppw-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.9rem;
-      margin-bottom: 0.9rem;
-    }
-    #pluto-phases-widget .ppw-field { flex: 1 1 180px; }
-    #pluto-phases-widget .ppw-field.ppw-wide { flex: 1 1 100%; }
-    #pluto-phases-widget label {
-      display: block;
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--ppw-ink-soft);
-      margin-bottom: 0.3rem;
-    }
-    #pluto-phases-widget input[type="date"],
-    #pluto-phases-widget input[type="time"],
-    #pluto-phases-widget input[type="text"],
-    #pluto-phases-widget input[type="number"],
-    #pluto-phases-widget select,
-    #pluto-phases-widget textarea {
-      width: 100%;
-      font-family: 'EB Garamond', Georgia, serif;
-      font-size: 1rem;
-      padding: 0.5rem 0.6rem;
-      background: #fbf6e8;
-      border: 1px solid var(--ppw-parchment-shadow);
-      border-radius: 2px;
-      color: var(--ppw-ink);
-    }
-    #pluto-phases-widget input:focus,
-    #pluto-phases-widget select:focus,
-    #pluto-phases-widget textarea:focus {
-      outline: 2px solid var(--ppw-gold);
-      outline-offset: 1px;
-    }
-    #pluto-phases-widget textarea { resize: vertical; min-height: 4.5rem; }
-    #pluto-phases-widget .ppw-help {
-      font-size: 0.8rem;
-      color: var(--ppw-ink-soft);
-      margin-top: 0.3rem;
-      font-style: italic;
-    }
-    #pluto-phases-widget .ppw-checkbox-row {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.88rem;
-      color: var(--ppw-ink-soft);
-      margin-top: 0.4rem;
-    }
-    #pluto-phases-widget .ppw-radio-group { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
-    #pluto-phases-widget .ppw-radio-group label {
-      display: flex; align-items: center; gap: 0.4rem;
-      text-transform: none; letter-spacing: 0; font-size: 0.95rem; color: var(--ppw-ink);
-      margin-bottom: 0;
-    }
-    #pluto-phases-widget .ppw-geo-row { display: flex; gap: 0.6rem; }
-    #pluto-phases-widget .ppw-geo-row input { flex: 1; }
-    #pluto-phases-widget button.ppw-geo-btn {
-      flex: 0 0 auto;
-      background: var(--ppw-ink);
-      color: var(--ppw-parchment);
-      border: none;
-      padding: 0 1rem;
-      border-radius: 2px;
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      cursor: pointer;
-    }
-    #pluto-phases-widget button.ppw-geo-btn:hover { background: var(--ppw-wine); }
-    #pluto-phases-widget .ppw-geo-status { font-size: 0.82rem; margin-top: 0.35rem; min-height: 1.1em; }
-    #pluto-phases-widget .ppw-geo-status.ppw-ok { color: #3c5a2e; }
-    #pluto-phases-widget .ppw-geo-status.ppw-err { color: var(--ppw-wine); }
-
-    /* Wax seal submit button */
-    #pluto-phases-widget .ppw-submit-wrap { text-align: center; margin: 2rem 0 0.5rem; }
-    #pluto-phases-widget button.ppw-seal {
-      position: relative;
-      width: 148px; height: 148px;
-      border-radius: 50%;
-      border: none;
-      cursor: pointer;
-      background:
-        radial-gradient(circle at 35% 30%, var(--ppw-wine-dark) 0%, var(--ppw-wine) 55%, var(--ppw-wine-dark) 100%);
-      box-shadow:
-        0 6px 14px rgba(43,32,22,0.45),
-        inset 0 0 0 4px rgba(169,130,44,0.55),
-        inset 0 0 18px rgba(0,0,0,0.35);
-      color: var(--ppw-gold-light);
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 0.95rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-    #pluto-phases-widget button.ppw-seal:hover:not(:disabled) { transform: scale(1.04); }
-    #pluto-phases-widget button.ppw-seal:disabled { opacity: 0.6; cursor: wait; }
-    #pluto-phases-widget button.ppw-seal .ppw-seal-glyph {
-      display: block; font-size: 1.9rem; margin-bottom: 0.15rem; line-height: 1;
-    }
-
-    #pluto-phases-widget .ppw-error-box {
-      margin-top: 1rem;
-      padding: 0.8rem 1rem;
-      border: 1px solid var(--ppw-wine);
-      background: rgba(122,32,54,0.08);
-      color: var(--ppw-wine-dark);
-      font-size: 0.92rem;
-      border-radius: 2px;
-    }
-
-    /* Results */
-    #pluto-phases-widget .ppw-results {
-      margin-top: 2.25rem;
-      animation: ppw-fade-in 0.7s ease;
-    }
-    @keyframes ppw-fade-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-    #pluto-phases-widget .ppw-results h3 {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.5rem;
-      color: var(--ppw-wine);
-      border-bottom: 1px solid var(--ppw-parchment-shadow);
-      padding-bottom: 0.35rem;
-      margin: 1.6rem 0 0.75rem;
-    }
-    #pluto-phases-widget .ppw-era-banner {
-      text-align: center;
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.15rem;
-      color: var(--ppw-ink);
-      padding: 0.9rem 1rem;
-      border: 1px solid var(--ppw-gold);
-      background: rgba(169,130,44,0.08);
-      border-radius: 2px;
-    }
-    #pluto-phases-widget .ppw-fallback-note {
-      font-size: 0.85rem;
-      font-style: italic;
-      color: var(--ppw-ink-soft);
-      margin-top: 0.5rem;
-    }
-    #pluto-phases-widget .ppw-luck-grid {
-      display: flex; flex-wrap: wrap; gap: 1rem;
-    }
-    #pluto-phases-widget .ppw-luck-card {
-      flex: 1 1 220px;
-      border: 1px solid var(--ppw-parchment-shadow);
-      background: rgba(255,255,255,0.25);
-      padding: 0.8rem 1rem;
-      border-radius: 2px;
-    }
-    #pluto-phases-widget .ppw-luck-card h4 {
-      margin: 0 0 0.4rem;
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.05rem;
-    }
-    #pluto-phases-widget .ppw-luck-card.ppw-lucky h4 { color: #3c5a2e; }
-    #pluto-phases-widget .ppw-luck-card.ppw-unlucky h4 { color: var(--ppw-wine); }
-    #pluto-phases-widget .ppw-luck-card p { margin: 0.15rem 0; font-size: 0.92rem; }
-
-    #pluto-phases-widget .ppw-hit-card {
-      border: 1px solid var(--ppw-parchment-shadow);
-      background: rgba(255,255,255,0.3);
-      padding: 0.9rem 1.1rem;
-      border-radius: 2px;
-      margin-bottom: 0.9rem;
-    }
-    #pluto-phases-widget .ppw-hit-head {
-      font-weight: 600;
-      margin-bottom: 0.4rem;
-      color: var(--ppw-ink);
-    }
-    #pluto-phases-widget .ppw-hit-window {
-      font-size: 0.82rem;
-      color: var(--ppw-ink-soft);
-      font-style: italic;
-      margin-bottom: 0.5rem;
-    }
-    #pluto-phases-widget .ppw-hit-text { font-size: 0.97rem; }
-    #pluto-phases-widget .ppw-hit-text.ppw-clamped {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    #pluto-phases-widget button.ppw-expand {
-      background: none; border: none; color: var(--ppw-wine);
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      cursor: pointer; padding: 0.3rem 0; font-size: 0.88rem;
-      text-decoration: underline;
-    }
-
-    /* CTA */
-    #pluto-phases-widget .ppw-cta {
-      margin-top: 2.5rem;
-      padding: 1.75rem 1.5rem;
-      text-align: center;
-      background: var(--ppw-ink);
-      color: var(--ppw-parchment);
-      border-radius: 2px;
-      position: relative;
-    }
-    #pluto-phases-widget .ppw-cta::before,
-    #pluto-phases-widget .ppw-cta::after {
-      content: "";
-      position: absolute; left: 1.25rem; right: 1.25rem; height: 1px;
-      background: var(--ppw-gold);
-    }
-    #pluto-phases-widget .ppw-cta::before { top: 6px; }
-    #pluto-phases-widget .ppw-cta::after { bottom: 6px; }
-    #pluto-phases-widget .ppw-cta h3 {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 1.5rem;
-      color: var(--ppw-gold-light);
-      margin: 0.3rem 0 0.5rem;
-      border: none;
-    }
-    #pluto-phases-widget .ppw-cta p {
-      max-width: 520px; margin: 0 auto 1.1rem;
-      color: #e6dcc2;
-      font-size: 0.98rem;
-    }
-    #pluto-phases-widget a.ppw-cta-btn {
-      display: inline-block;
-      background: var(--ppw-gold);
-      color: var(--ppw-ink);
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      text-decoration: none;
-      padding: 0.7rem 1.6rem;
-      border-radius: 2px;
-    }
-    #pluto-phases-widget a.ppw-cta-btn:hover { background: var(--ppw-gold-light); }
-
-    #pluto-phases-widget .ppw-disclaimer {
-      margin-top: 1.75rem;
-      font-size: 0.75rem;
-      color: var(--ppw-ink-soft);
-      text-align: center;
-      line-height: 1.5;
-    }
-    #pluto-phases-widget .ppw-disclaimer a { color: var(--ppw-ink-soft); }
-
-    @media (max-width: 520px) {
-      #pluto-phases-widget button.ppw-seal { width: 120px; height: 120px; font-size: 0.8rem; }
-      #pluto-phases-widget h2.ppw-title { font-size: 1.9rem; }
-    }
-  </style>
 
   <p class="ppw-eyebrow">Pluto Phases</p>
   <h2 class="ppw-title">What Was Happening?</h2>
-  <p class="ppw-sub">Enter your birth details and a moment from your life. We'll trace which transiting Pluto pattern was active — the same system behind your full 75&#8209;page Transit Report.</p>
+  <p class="ppw-sub">Give us your birth details and one moment from your life. We'll trace the transiting Pluto pattern that was active then &mdash; the same reading system behind the full 75&#8209;page Transit Report.</p>
 
   <form id="ppw-form">
     <fieldset>
@@ -371,15 +462,14 @@
         <div class="ppw-field">
           <label for="ppw-utc-offset">Time zone at birth (UTC offset)</label>
           <select id="ppw-utc-offset"></select>
-          <div class="ppw-help">The offset in effect at your birth location on that date (include daylight saving if it applied). If unsure, use your location's standard offset.</div>
+          <div class="ppw-help">The offset in effect at your birth location on that date. If unsure, use your location's standard offset.</div>
         </div>
         <div class="ppw-field">
           <label>Gender</label>
-          <div class="ppw-radio-group" style="margin-top:0.55rem;">
+          <div class="ppw-radio-group" style="margin-top:0.6rem;">
             <label><input type="radio" name="ppw-gender" value="Male" checked> Male</label>
             <label><input type="radio" name="ppw-gender" value="Female"> Female</label>
           </div>
-          <div class="ppw-help">Determines which point drives the Pluto Phase house and Book of Luck reading &mdash; Sun for male, Moon for female (matching the app and report).</div>
         </div>
       </div>
     </fieldset>
@@ -400,7 +490,17 @@
 
     <div class="ppw-submit-wrap">
       <button type="submit" class="ppw-seal" id="ppw-submit">
-        <span class="ppw-seal-glyph">&#9807;</span>
+        <span class="ppw-seal-icon" id="ppw-icon-idle">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 40 C 12 20, 20 20, 26 32 S 40 44, 46 24 S 56 12, 60 24" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+            <text x="32" y="52" text-anchor="middle" font-size="20" fill="currentColor" font-family="Georgia, serif">&#9807;</text>
+          </svg>
+        </span>
+        <span class="ppw-seal-icon ppw-hidden" id="ppw-icon-loading">
+          <svg class="ppw-seal-spin" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="24" stroke="currentColor" stroke-width="3" stroke-dasharray="38 100" stroke-linecap="round"/>
+          </svg>
+        </span>
         Reveal
       </button>
     </div>
@@ -410,7 +510,7 @@
   <div id="ppw-results"></div>
 
   <p class="ppw-disclaimer">
-    For entertainment and personal reflection only — not scientifically validated, not a
+    For entertainment and personal reflection only &mdash; not scientifically validated, not a
     predictor of real outcomes, and not a substitute for professional medical, legal, or
     financial advice.
   </p>
@@ -419,27 +519,50 @@
 
 <script src="pluto-engine.js"></script>
 <script>
-
 (function () {
-  // pluto-engine.js is loaded via a normal <script src="pluto-engine.js">
-  // tag earlier in this same page, so it is already available by the time
-  // this script runs -- no dynamic script injection needed.
-  function loadEngineScript(cb) { cb(); }
+  // ---- Fill these in once you have an EmailJS account (free tier is enough) ----
+  // Sign up at https://www.emailjs.com, connect an email service, create a
+  // template with variables: {{interest}} {{summary}}, then paste the IDs below.
+  var EMAILJS_PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY";
+  var EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
+  var EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID";
+  if (window.emailjs && EMAILJS_PUBLIC_KEY.indexOf("YOUR_") !== 0) {
+    window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+  }
 
-  var root = document.getElementById("pluto-phases-widget");
+  var OFFERS = {
+    report: {
+      title: "Pluto Phases Transit Report",
+      price: "$60",
+      url: "https://form.jotform.com/253463431263049"
+    },
+    consultation: {
+      title: "Consultation / General Reading",
+      price: "$60",
+      url: "https://form.jotform.com/253463431263049"
+    },
+    kindle: {
+      title: "Kindle eBooks",
+      price: "$60",
+      url: "https://www.amazon.in/Kindle-Store-Sanju-Paison/s?rh=n%3A1571277031%2Cp_27%3ASanju%2BPaison"
+    }
+  };
+
   var form = document.getElementById("ppw-form");
   var resultsEl = document.getElementById("ppw-results");
   var errorEl = document.getElementById("ppw-error");
   var submitBtn = document.getElementById("ppw-submit");
+  var iconIdle = document.getElementById("ppw-icon-idle");
+  var iconLoading = document.getElementById("ppw-icon-loading");
   var geoBtn = document.getElementById("ppw-geo-btn");
   var geoStatus = document.getElementById("ppw-geo-status");
   var timeUnknownBox = document.getElementById("ppw-time-unknown");
   var timeInput = document.getElementById("ppw-birth-time");
   var utcSelect = document.getElementById("ppw-utc-offset");
 
-  var resolvedLat = null, resolvedLon = null;
+  var resolvedLat = null, resolvedLon = null, resolvedPlaceName = null;
+  var lastInput = null, lastResult = null;
 
-  // Populate UTC offset dropdown
   var OFFSETS = [-12,-11,-10,-9.5,-9,-8,-7,-6,-5,-4.5,-4,-3.5,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,5.75,6,6.5,7,8,8.75,9,9.5,10,10.5,11,12,12.75,13,14];
   OFFSETS.forEach(function (o) {
     var opt = document.createElement("option");
@@ -460,39 +583,48 @@
     if (!place) { geoStatus.textContent = "Enter a place first."; geoStatus.className = "ppw-geo-status ppw-err"; return; }
     geoStatus.textContent = "Searching...";
     geoStatus.className = "ppw-geo-status";
-    loadEngineScript(function () {
-      window.PlutoPhasesEngine.geocodePlace(place).then(function (loc) {
-        resolvedLat = loc.latitude; resolvedLon = loc.longitude;
-        geoStatus.textContent = "Found: " + loc.displayName + " (" + loc.latitude.toFixed(3) + ", " + loc.longitude.toFixed(3) + ")";
-        geoStatus.className = "ppw-geo-status ppw-ok";
-      }).catch(function (err) {
-        resolvedLat = null; resolvedLon = null;
-        geoStatus.textContent = err.message || "Could not find that place.";
-        geoStatus.className = "ppw-geo-status ppw-err";
-      });
+    window.PlutoPhasesEngine.geocodePlace(place).then(function (loc) {
+      resolvedLat = loc.latitude; resolvedLon = loc.longitude; resolvedPlaceName = loc.displayName;
+      geoStatus.textContent = "Found: " + loc.displayName + " (" + loc.latitude.toFixed(3) + ", " + loc.longitude.toFixed(3) + ")";
+      geoStatus.className = "ppw-geo-status ppw-ok";
+    }).catch(function (err) {
+      resolvedLat = null; resolvedLon = null; resolvedPlaceName = null;
+      geoStatus.textContent = err.message || "Could not find that place.";
+      geoStatus.className = "ppw-geo-status ppw-err";
     });
   });
 
-  function showError(msg) {
-    errorEl.textContent = msg;
-    errorEl.style.display = "block";
-  }
+  function showError(msg) { errorEl.textContent = msg; errorEl.style.display = "block"; }
   function clearError() { errorEl.style.display = "none"; errorEl.textContent = ""; }
-
-  function fmtDate(d) {
-    return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  function fmtDate(d) { return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }); }
+  function setBusy(busy) {
+    submitBtn.disabled = busy;
+    iconIdle.classList.toggle("ppw-hidden", busy);
+    iconLoading.classList.toggle("ppw-hidden", !busy);
   }
 
   function renderResults(r) {
     var html = "";
-    html += '<h3>The Era</h3>';
-    html += '<div class="ppw-era-banner">You were living through the <strong>' + r.era.sign + ' Pluto Phase</strong> (' +
-      r.era.startYear + '&ndash;' + r.era.endYear + ') on ' + fmtDate(r.eventDate) + '.</div>';
+    html += '<h3>The Era You Were In</h3>';
+    html += '<div class="ppw-era-banner">On ' + fmtDate(r.eventDate) + ', you were living through the <strong>' +
+      r.era.sign + ' Pluto Phase</strong> (' + r.era.startYear + '&ndash;' + r.era.endYear + ').</div>';
 
-    html += '<h3>The Pattern in Effect</h3>';
-    html += '<p>As a <strong>' + r.personSign + '</strong>, this era places <strong>' + r.houses.firstHouseSign +
-      '</strong> in your 1st house and <strong>' + r.houses.tenthHouseSign + '</strong> in your 10th house. ' +
-      r.housesIntro + '</p>';
+    html += '<div class="ppw-house-dominant">';
+    html += '<h3>Your Everyday Pattern</h3>';
+    html += '<p class="ppw-house-lede">This is the backbone of your reading &mdash; how this era shapes both your day-to-day nature and your career, spelled out with real examples.</p>';
+    html += '<div class="ppw-house-card">' +
+      '<h4>Your General Energy</h4>' +
+      '<span class="ppw-house-sign">' + r.housesContent.first.sign + ' in the 1st House</span>' +
+      '<p class="ppw-trait">This tends to make you ' + r.housesContent.first.trait + '.</p>' +
+      '<blockquote class="ppw-example">' + r.housesContent.first.example + '</blockquote>' +
+      '</div>';
+    html += '<div class="ppw-house-card">' +
+      '<h4>Your Career &amp; Public Life</h4>' +
+      '<span class="ppw-house-sign">' + r.housesContent.tenth.sign + ' in the 10th House</span>' +
+      '<p class="ppw-trait">Your public accomplishment tends to run through ' + r.housesContent.tenth.trait + '.</p>' +
+      '<blockquote class="ppw-example">' + r.housesContent.tenth.example + '</blockquote>' +
+      '</div>';
+    html += '</div>';
 
     if (r.luck) {
       html += '<h3>Book of Luck for This Era</h3>';
@@ -508,7 +640,7 @@
       html += '</div>';
     }
 
-    html += '<h3>What Was Active</h3>';
+    html += '<h3>What Was Active That Day</h3>';
     if (r.usedFallback) {
       html += '<p class="ppw-fallback-note">No aspect window fell exactly on this date &mdash; showing the nearest exact hits instead.</p>';
     }
@@ -517,18 +649,13 @@
       html += '<div class="ppw-hit-card">';
       html += '<div class="ppw-hit-head">' + fmtDate(h.date) + ' &mdash; Pluto&minus;135&deg; ' + h.aspectLabel + ' natal ' + h.natalPointName + '</div>';
       html += '<div class="ppw-hit-window">Active window: ' + fmtDate(h.windowStartDate) + ' to ' + fmtDate(h.windowEndDate) +
-        ' (date may shift roughly &plusmn;' + h.uncertaintyDays + ' days due to birth-time precision)</div>';
+        ' (may shift roughly &plusmn;' + h.uncertaintyDays + ' days due to birth-time precision)</div>';
       html += '<div class="ppw-hit-text ppw-clamped" id="' + uid + '">' + h.interpretation + '</div>';
       html += '<button type="button" class="ppw-expand" data-target="' + uid + '">Read the full reading</button>';
       html += '</div>';
     });
 
-    html += '<div class="ppw-cta">' +
-      '<h3>This Is One Page of Your Phases</h3>' +
-      '<p>Your complete life carries dozens of these windows &mdash; every exact Pluto transit across every era, ' +
-      'fully mapped. The full Transit Report lays out all of it, 75 pages deep.</p>' +
-      '<a class="ppw-cta-btn" href="https://lifeprediction.net" target="_blank" rel="noopener">Order Your Full Transit Report</a>' +
-      '</div>';
+    html += renderOffersHtml();
 
     resultsEl.innerHTML = html;
 
@@ -540,7 +667,84 @@
       });
     });
 
+    wireOffers();
     resultsEl.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function renderOffersHtml() {
+    var html = '<div class="ppw-offers">';
+    html += '<h3>Go Deeper</h3>';
+    html += '<p class="ppw-offers-lede">This page traced one moment. Your full chart holds dozens more &mdash; here\'s how to explore the rest with Sanju Paison.</p>';
+    html += '<div class="ppw-offer-list">';
+    html += offerItemHtml("report", OFFERS.report.title, OFFERS.report.price,
+      "The full 75-page report mapping 60 years of your major turning points, transit dates, timelines, and guidance.");
+    html += offerItemHtml("consultation", OFFERS.consultation.title, OFFERS.consultation.price,
+      "A 30-minute live chat with Sanju Paison to talk through where you are and what's ahead.");
+    html += offerItemHtml("kindle", OFFERS.kindle.title, OFFERS.kindle.price,
+      "12 titles covering Pluto Phases, location astrology, compatibility, and an astrology short story.");
+    html += '</div>';
+    html += '<div class="ppw-offers-submit-wrap">' +
+      '<button type="button" class="ppw-offers-btn" id="ppw-offers-btn">Continue</button>' +
+      '<div class="ppw-offers-status" id="ppw-offers-status"></div>' +
+      '<div class="ppw-offers-links" id="ppw-offers-links"></div>' +
+      '</div>';
+    html += '</div>';
+    return html;
+  }
+  function offerItemHtml(key, title, price, desc) {
+    return '<div class="ppw-offer-item">' +
+      '<input type="checkbox" id="ppw-offer-' + key + '" value="' + key + '">' +
+      '<label for="ppw-offer-' + key + '"><span class="ppw-offer-title">' + title + ' &mdash; <span class="ppw-offer-price">' + price + '</span></span>' +
+      '<span class="ppw-offer-desc">' + desc + '</span></label>' +
+      '</div>';
+  }
+
+  function wireOffers() {
+    var btn = document.getElementById("ppw-offers-btn");
+    var status = document.getElementById("ppw-offers-status");
+    var linksEl = document.getElementById("ppw-offers-links");
+    btn.addEventListener("click", function () {
+      var selected = ["report", "consultation", "kindle"].filter(function (k) {
+        return document.getElementById("ppw-offer-" + k).checked;
+      });
+      if (selected.length === 0) {
+        status.textContent = "Select at least one option above first.";
+        return;
+      }
+      var needsLead = selected.indexOf("report") !== -1 || selected.indexOf("consultation") !== -1;
+      linksEl.innerHTML = "";
+      selected.forEach(function (k) {
+        var a = document.createElement("a");
+        a.className = "ppw-cta-btn";
+        a.href = OFFERS[k].url;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.textContent = "Open " + OFFERS[k].title;
+        linksEl.appendChild(a);
+      });
+
+      if (!needsLead) {
+        status.textContent = "";
+        return;
+      }
+
+      btn.disabled = true;
+      status.textContent = "Sending your details to Sanju...";
+      var interestLabel = selected.map(function (k) { return OFFERS[k].title; }).join(" + ");
+      var summary = window.PlutoPhasesEngine.buildLeadSummary(lastInput, lastResult, interestLabel, resolvedPlaceName);
+
+      var sendPromise = (window.emailjs && EMAILJS_PUBLIC_KEY.indexOf("YOUR_") !== 0)
+        ? window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { interest: interestLabel, summary: summary })
+        : Promise.reject(new Error("Email not configured"));
+
+      sendPromise.then(function () {
+        status.textContent = "Your details have been sent. Continue below to complete your request.";
+      }).catch(function () {
+        status.textContent = "Please mention your birth and event details on the next page \u2014 we couldn't send them automatically.";
+      }).then(function () {
+        btn.disabled = false;
+      });
+    });
   }
 
   form.addEventListener("submit", function (e) {
@@ -566,35 +770,31 @@
     var input = {
       birthYear: bParts[0], birthMonth: bParts[1], birthDay: bParts[2],
       birthHour: tParts[0], birthMinute: tParts[1],
+      birthTimeUnknown: timeUnknownBox.checked,
       utcOffsetHours: parseFloat(utcSelect.value),
       latitude: resolvedLat, longitude: resolvedLon,
       eventYear: eParts[0], eventMonth: eParts[1], eventDay: eParts[2],
       description: document.getElementById("ppw-event-desc").value || "",
-      personPoint: personPoint,
+      personPoint: personPoint, gender: gender,
       offsetDegrees: 135, orbDegrees: 3
     };
 
-    submitBtn.disabled = true;
-    submitBtn.querySelector(".ppw-seal-glyph") && (submitBtn.querySelector(".ppw-seal-glyph").textContent = "\u231B");
-
-    loadEngineScript(function () {
-      window.PlutoPhasesEngine.loadData().then(function (data) {
-        try {
-          var r = window.PlutoPhasesEngine.explainEvent(input, data);
-          renderResults(r);
-        } catch (err) {
-          showError(err.message || "Something went wrong computing your reading.");
-        }
-      }).catch(function () {
-        showError("Could not load the astrological data. Please check your connection and try again.");
-      }).then(function () {
-        submitBtn.disabled = false;
-        submitBtn.querySelector(".ppw-seal-glyph") && (submitBtn.querySelector(".ppw-seal-glyph").textContent = "\u2647");
-      });
+    setBusy(true);
+    window.PlutoPhasesEngine.loadData().then(function (data) {
+      try {
+        var r = window.PlutoPhasesEngine.explainEvent(input, data);
+        lastInput = input; lastResult = r;
+        renderResults(r);
+      } catch (err) {
+        showError(err.message || "Something went wrong computing your reading.");
+      }
+    }).catch(function () {
+      showError("Could not load the astrological data. Please check your connection and try again.");
+    }).then(function () {
+      setBusy(false);
     });
   });
 })();
-
 </script>
 </body>
 </html>

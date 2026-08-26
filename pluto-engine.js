@@ -437,6 +437,37 @@
     Aquarius: "technology, science, activism, or group and community-oriented work",
     Pisces: "the arts, healing professions, spirituality, or charitable work"
   };
+  // Concrete, real-world illustrations backing up each trait — used to make
+  // the house section the dominant, most tangible part of the reading
+  // rather than a one-line abstraction.
+  var FIRST_HOUSE_EXAMPLE = {
+    Aries: "you're the one who suggests the plan on the spot and is already moving before anyone else has finished deliberating \u2014 the one who starts the business on a hunch, or is first to sign up for a physical challenge nobody else wants to try.",
+    Taurus: "you're the one furnishing a first apartment slowly and properly rather than settling for whatever's cheapest, or sticking to a savings plan for years without touching it, because the payoff of patience matters more than instant comfort.",
+    Gemini: "you're the one juggling three group chats, two side projects, and a stack of half-read books at once \u2014 energized by variety rather than drained by it, always mid-conversation with someone new.",
+    Cancer: "you're the one who remembers everyone's birthday, keeps the family group chat alive, and can turn any rented apartment into a place people actually want to come home to.",
+    Leo: "you're the one who volunteers to give the toast, posts the highlight reel, or simply walks into a room and gets noticed without particularly trying to be.",
+    Virgo: "you're the one color-coding the spreadsheet nobody asked for, or quietly catching the typo in the presentation everyone else missed five read-throughs earlier.",
+    Libra: "you're the one mediating the argument between two friends, or genuinely agonizing over which restaurant is fair to suggest to a group of six with different tastes.",
+    Scorpio: "you're the one people confide their real secrets to, or the one who reinvents their whole life after a breakup rather than just quietly moving on.",
+    Sagittarius: "you're the one who books the one-way ticket, or turns a casual hobby into a plan to travel three countries just to get better at it.",
+    Capricorn: "you're the one still working, deliberately and without fanfare, toward the same ten-year goal you set for yourself back in your twenties.",
+    Aquarius: "you're the one starting the niche online community around an idea nobody else has heard of yet, or the one who refuses to do something a certain way just because that's how it's always been done.",
+    Pisces: "you're the one who tears up at other people's good news, or the one everyone assumes is 'just tired' when really you've quietly absorbed the mood of the whole room."
+  };
+  var TENTH_HOUSE_EXAMPLE = {
+    Aries: "think a founder who launches before the product feels fully ready, a competitive athlete building a career on being first, or someone who thrives being the one to break into a brand-new market.",
+    Taurus: "think a property investor who buys and holds for decades, a chef who insists on sourcing every ingredient personally, or a banker still running the same conservative strategy that quietly outperformed everyone a decade later.",
+    Gemini: "think a journalist chasing three stories at once, a teacher who'll explain the same idea five different ways until it finally lands, or a salesperson who can talk their way into any room.",
+    Cancer: "think a nurse who remembers every patient's name, a restaurateur who runs the place like a family kitchen, or a real-estate agent who treats every listing like someone's future home rather than just a transaction.",
+    Leo: "think a performer who visibly comes alive under a spotlight, an executive who leads a room by sheer presence, or a creative director whose name ends up in the credits.",
+    Virgo: "think a surgeon who reviews every chart twice, an editor who catches the one inconsistency on page 340, or an operations manager quietly holding the whole company together.",
+    Libra: "think a mediator who settles disputes for a living, an interior designer obsessing over a room's proportions, or a lawyer who's genuinely, unusually good at seeing both sides.",
+    Scorpio: "think a therapist who sits calmly with people's hardest moments, a forensic accountant untangling a fraud case, or a turnaround CEO brought in specifically because a company is already in crisis.",
+    Sagittarius: "think a professor who's taught on three continents, a travel writer who's never quite unpacked, or a lawyer who specializes in cases that cross borders.",
+    Capricorn: "think a city planner thinking in decades, a corporate executive who rose slowly and deliberately through the ranks, or a project manager who hasn't missed a deadline in ten years.",
+    Aquarius: "think a software engineer building open-source tools for free, a scientist chasing a theory most of the field dismisses, or a community organizer running a grassroots campaign on conviction alone.",
+    Pisces: "think a musician who only ever writes from genuine feeling, a hospice worker, or a charity founder who started the whole thing because they personally couldn't look away from a need."
+  };
   function computePlutoPhaseHouses(personSignIndex, phaseSignIndex) {
     var offset = (personSignIndex - phaseSignIndex) % 12;
     if (offset < 0) offset += 12;
@@ -451,6 +482,23 @@
     return hs.firstHouseSign + " in the 1st house means the overall life situation and energy tend to be " +
       firstDesc + ". " + hs.tenthHouseSign + " in the 10th house means career and public accomplishment " +
       "are most likely tied to " + tenthDesc + ".";
+  }
+  // Structured version for rendering the dominant, example-backed house
+  // section in the UI (trait clause + a concrete real-world illustration
+  // per sign, for both the 1st and 10th house).
+  function plutoPhaseHousesContent(hs) {
+    return {
+      first: {
+        sign: hs.firstHouseSign,
+        trait: FIRST_HOUSE_TEXT[hs.firstHouseSign] || "",
+        example: FIRST_HOUSE_EXAMPLE[hs.firstHouseSign] || ""
+      },
+      tenth: {
+        sign: hs.tenthHouseSign,
+        trait: TENTH_HOUSE_TEXT[hs.tenthHouseSign] || "",
+        example: TENTH_HOUSE_EXAMPLE[hs.tenthHouseSign] || ""
+      }
+    };
   }
 
   // Book of Luck cycles
@@ -614,6 +662,7 @@
 
     var houses = computePlutoPhaseHouses(personSignIndex, eraSignIndex);
     var housesIntro = plutoPhaseHousesIntroText(houses);
+    var housesContent = plutoPhaseHousesContent(houses);
 
     var bIdx = bookEraIndex(eIdx);
     var luck = null;
@@ -629,6 +678,7 @@
       personSign: personSign,
       houses: houses,
       housesIntro: housesIntro,
+      housesContent: housesContent,
       luck: luck,
       hits: top,
       usedFallback: usedFallback,
@@ -668,12 +718,45 @@
   }
 
   // ============================================================
+  // Lead summary — human-readable text bundling everything the visitor
+  // entered plus their computed reading, for sending to the site owner
+  // when purchase intent is expressed.
+  // ============================================================
+  function buildLeadSummary(input, result, interestLabel, placeDisplayName) {
+    var lines = [];
+    lines.push("Interested in: " + interestLabel);
+    lines.push("");
+    lines.push("Birth date: " + input.birthYear + "-" + pad2(input.birthMonth) + "-" + pad2(input.birthDay));
+    lines.push("Birth time: " + pad2(input.birthHour) + ":" + pad2(input.birthMinute) +
+      (input.birthTimeUnknown ? " (marked as unknown/approximate)" : ""));
+    lines.push("Birth place: " + (placeDisplayName || "(lat " + input.latitude + ", lon " + input.longitude + ")"));
+    lines.push("UTC offset used: " + input.utcOffsetHours);
+    lines.push("Gender: " + input.gender);
+    lines.push("");
+    lines.push("Event date: " + input.eventYear + "-" + pad2(input.eventMonth) + "-" + pad2(input.eventDay));
+    lines.push("Event description: " + (input.description || "(none provided)"));
+    lines.push("");
+    if (result) {
+      lines.push("Computed Pluto Phase era: " + result.era.sign + " (" + result.era.startYear + "\u2013" + result.era.endYear + ")");
+      lines.push("Person sign used: " + result.personSign);
+      lines.push("1st house sign: " + result.houses.firstHouseSign + " / 10th house sign: " + result.houses.tenthHouseSign);
+      if (result.hits && result.hits.length) {
+        lines.push("Top active aspect: " + result.hits[0].aspectLabel + " natal " + result.hits[0].natalPointName +
+          " (exact " + result.hits[0].date.toISOString().slice(0, 10) + ")");
+      }
+    }
+    return lines.join("\n");
+  }
+  function pad2(n) { n = String(n); return n.length < 2 ? "0" + n : n; }
+
+  // ============================================================
   // Expose
   // ============================================================
   window.PlutoPhasesEngine = {
     explainEvent: explainEvent,
     loadData: loadData,
     geocodePlace: geocodePlace,
+    buildLeadSummary: buildLeadSummary,
     ZODIAC_SIGNS: ZODIAC_SIGNS
   };
 })();
