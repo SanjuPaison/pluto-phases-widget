@@ -57,11 +57,25 @@
   }
   #pluto-phases-widget.ppw-root {
     border: 1px solid var(--ppw-parchment-shadow);
+    border-radius: 22px;
     box-shadow:
       0 0 0 10px var(--ppw-parchment),
-      0 0 0 11px var(--ppw-gold),
+      0 0 0 12px var(--ppw-gold),
       0 14px 50px rgba(43,32,22,0.55);
+    overflow: hidden;
   }
+  #pluto-phases-widget .ppw-corner {
+    position: absolute;
+    width: 46px; height: 46px;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.85;
+  }
+  #pluto-phases-widget .ppw-corner svg { width: 100%; height: 100%; display: block; }
+  #pluto-phases-widget .ppw-corner-tl { top: 6px; left: 6px; }
+  #pluto-phases-widget .ppw-corner-tr { top: 6px; right: 6px; transform: scaleX(-1); }
+  #pluto-phases-widget .ppw-corner-bl { bottom: 6px; left: 6px; transform: scaleY(-1); }
+  #pluto-phases-widget .ppw-corner-br { bottom: 6px; right: 6px; transform: scale(-1,-1); }
   #pluto-phases-widget.ppw-root * { box-sizing: border-box; }
   #pluto-phases-widget .ppw-eyebrow {
     font-family: 'Cormorant Garamond', Georgia, serif;
@@ -90,7 +104,7 @@
   }
   #pluto-phases-widget fieldset {
     border: 1px solid var(--ppw-parchment-shadow);
-    border-radius: 2px;
+    border-radius: 10px;
     padding: 1.1rem 1.4rem 1.4rem;
     margin: 0 0 1.4rem;
     background: rgba(255,255,255,0.12);
@@ -131,7 +145,7 @@
     padding: 0.55rem 0.7rem;
     background: #fbf6e8;
     border: 1px solid var(--ppw-parchment-shadow);
-    border-radius: 2px;
+    border-radius: 10px;
     color: var(--ppw-ink);
   }
   #pluto-phases-widget input:focus,
@@ -171,7 +185,7 @@
     color: var(--ppw-parchment);
     border: none;
     padding: 0 1.2rem;
-    border-radius: 2px;
+    border-radius: 10px;
     font-family: 'Cormorant Garamond', Georgia, serif;
     font-size: 1.05rem;
     cursor: pointer;
@@ -217,12 +231,29 @@
     background: rgba(122,32,54,0.1);
     color: var(--ppw-wine-dark);
     font-size: 1rem;
-    border-radius: 2px;
+    border-radius: 10px;
   }
 
   /* Results */
   #pluto-phases-widget .ppw-results { margin-top: 2.5rem; animation: ppw-fade-in 0.7s ease; }
   @keyframes ppw-fade-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  #pluto-phases-widget .ppw-translate-bar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem;
+    margin-bottom: 1.2rem; font-size: 0.92rem; color: var(--ppw-ink-soft);
+  }
+  #pluto-phases-widget .ppw-translate-bar label { display: inline; text-transform: none; letter-spacing: 0; font-size: 0.95rem; margin: 0; }
+  #pluto-phases-widget .ppw-translate-bar select {
+    width: auto; font-size: 0.95rem; padding: 0.3rem 0.5rem;
+  }
+  #pluto-phases-widget button#ppw-translate-btn {
+    background: var(--ppw-ink); color: var(--ppw-parchment); border: none;
+    padding: 0.35rem 0.9rem; border-radius: 10px; font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.95rem; cursor: pointer;
+  }
+  #pluto-phases-widget button#ppw-translate-btn:hover:not(:disabled) { background: var(--ppw-wine); }
+  #pluto-phases-widget button#ppw-translate-btn:disabled { opacity: 0.6; cursor: wait; }
+  #pluto-phases-widget .ppw-translate-status { font-style: italic; font-size: 0.85rem; }
+
   #pluto-phases-widget .ppw-results h3 {
     font-family: 'Cormorant Garamond', Georgia, serif;
     font-size: 1.7rem;
@@ -239,7 +270,7 @@
     padding: 1rem 1.1rem;
     border: 1px solid var(--ppw-gold);
     background: rgba(169,130,44,0.1);
-    border-radius: 2px;
+    border-radius: 10px;
   }
 
   /* Dominant house section */
@@ -247,7 +278,7 @@
     margin-top: 1.5rem;
     padding: 1.6rem 1.6rem 1.8rem;
     border: 2px solid var(--ppw-gold);
-    border-radius: 3px;
+    border-radius: 14px;
     background:
       radial-gradient(ellipse at top left, rgba(169,130,44,0.14), transparent 60%),
       rgba(255,255,255,0.18);
@@ -284,19 +315,27 @@
     font-size: 1.75rem;
     color: var(--ppw-ink);
     display: block;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.2rem;
   }
-  #pluto-phases-widget .ppw-house-card p.ppw-trait { margin: 0 0 0.6rem; font-size: 1.08rem; }
-  #pluto-phases-widget .ppw-house-card blockquote.ppw-example {
-    margin: 0;
-    padding: 0.85rem 1.1rem;
-    border-left: 4px solid var(--ppw-gold);
-    background: rgba(169,130,44,0.08);
-    font-style: italic;
-    font-size: 1.08rem;
-    color: var(--ppw-ink-soft);
+  #pluto-phases-widget .ppw-house-card .ppw-house-set {
+    display: block;
+    font-size: 0.85rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--ppw-gold);
+    font-weight: 600;
+    margin-bottom: 0.7rem;
   }
-  #pluto-phases-widget .ppw-house-card blockquote.ppw-example::before { content: "For example \u2014 "; font-style: normal; font-weight: 600; color: var(--ppw-wine); }
+  #pluto-phases-widget .ppw-house-card p.ppw-house-content { margin: 0; font-size: 1.08rem; }
+  #pluto-phases-widget .ppw-house-card-primary {
+    padding: 1.1rem 1.3rem;
+    border: 1px solid var(--ppw-gold);
+    border-radius: 10px;
+    background: rgba(169,130,44,0.06);
+  }
+  #pluto-phases-widget .ppw-house-card-primary h4 { font-size: 1.6rem; }
+  #pluto-phases-widget .ppw-house-card-primary .ppw-house-sign { font-size: 2rem; }
+  #pluto-phases-widget .ppw-house-card-primary p.ppw-house-content { font-size: 1.14rem; line-height: 1.7; }
 
   #pluto-phases-widget .ppw-fallback-note {
     font-size: 0.9rem;
@@ -304,24 +343,11 @@
     color: var(--ppw-ink-soft);
     margin-top: 0.5rem;
   }
-  #pluto-phases-widget .ppw-luck-grid { display: flex; flex-wrap: wrap; gap: 1.1rem; }
-  #pluto-phases-widget .ppw-luck-card {
-    flex: 1 1 230px;
-    border: 1px solid var(--ppw-parchment-shadow);
-    background: rgba(255,255,255,0.25);
-    padding: 0.9rem 1.1rem;
-    border-radius: 2px;
-  }
-  #pluto-phases-widget .ppw-luck-card h4 { margin: 0 0 0.45rem; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.2rem; }
-  #pluto-phases-widget .ppw-luck-card.ppw-lucky h4 { color: #3c5a2e; }
-  #pluto-phases-widget .ppw-luck-card.ppw-unlucky h4 { color: var(--ppw-wine); }
-  #pluto-phases-widget .ppw-luck-card p { margin: 0.2rem 0; font-size: 1rem; }
-
   #pluto-phases-widget .ppw-hit-card {
     border: 1px solid var(--ppw-parchment-shadow);
     background: rgba(255,255,255,0.3);
     padding: 1rem 1.2rem;
-    border-radius: 2px;
+    border-radius: 10px;
     margin-bottom: 1rem;
   }
   #pluto-phases-widget .ppw-hit-head { font-weight: 600; margin-bottom: 0.45rem; color: var(--ppw-ink); font-size: 1.08rem; }
@@ -340,7 +366,7 @@
     padding: 1.9rem 1.6rem;
     background: var(--ppw-ink);
     color: var(--ppw-parchment);
-    border-radius: 3px;
+    border-radius: 14px;
     position: relative;
   }
   #pluto-phases-widget .ppw-offers::before,
@@ -366,7 +392,7 @@
     display: flex; gap: 0.85rem; align-items: flex-start;
     padding: 0.9rem 1.1rem;
     border: 1px solid rgba(209,167,72,0.4);
-    border-radius: 2px;
+    border-radius: 10px;
     background: rgba(255,255,255,0.05);
   }
   #pluto-phases-widget .ppw-offer-item input[type="checkbox"] { margin-top: 0.3rem; }
@@ -388,7 +414,7 @@
     font-size: 1.1rem;
     border: none;
     padding: 0.8rem 1.9rem;
-    border-radius: 2px;
+    border-radius: 10px;
     cursor: pointer;
   }
   #pluto-phases-widget button.ppw-offers-btn:hover { background: var(--ppw-gold-light); }
@@ -404,7 +430,7 @@
     letter-spacing: 0.03em;
     text-decoration: none;
     padding: 0.7rem 1.5rem;
-    border-radius: 2px;
+    border-radius: 10px;
   }
   #pluto-phases-widget a.ppw-cta-btn:hover { background: var(--ppw-gold-light); }
 
@@ -415,6 +441,7 @@
     text-align: center;
     line-height: 1.5;
   }
+  #pluto-phases-widget .ppw-disclaimer a { color: var(--ppw-wine); }
 
   @media (max-width: 560px) {
     html { font-size: 17px; }
@@ -426,6 +453,55 @@
 <body>
 
 <div id="pluto-phases-widget" class="ppw-root">
+
+  <div class="ppw-corner ppw-corner-tl" aria-hidden="true">
+    <svg viewBox="0 0 46 46" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 24 C4 12, 12 4, 24 4" fill="none" stroke="var(--ppw-gold)" stroke-width="1.6"/>
+      <path d="M4 16 C4 9, 9 4, 16 4" fill="none" stroke="var(--ppw-gold)" stroke-width="1"/>
+      <g transform="translate(11,11)">
+        <path d="M0,-8 1.6,-1.6 8,0 1.6,1.6 0,8 -1.6,1.6 -8,0 -1.6,-1.6 Z" fill="var(--ppw-gold)"/>
+        <circle r="1.6" fill="var(--ppw-wine)"/>
+      </g>
+      <circle cx="24" cy="4" r="1.4" fill="var(--ppw-gold)"/>
+      <circle cx="4" cy="24" r="1.4" fill="var(--ppw-gold)"/>
+    </svg>
+  </div>
+  <div class="ppw-corner ppw-corner-tr" aria-hidden="true">
+    <svg viewBox="0 0 46 46" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 24 C4 12, 12 4, 24 4" fill="none" stroke="var(--ppw-gold)" stroke-width="1.6"/>
+      <path d="M4 16 C4 9, 9 4, 16 4" fill="none" stroke="var(--ppw-gold)" stroke-width="1"/>
+      <g transform="translate(11,11)">
+        <path d="M0,-8 1.6,-1.6 8,0 1.6,1.6 0,8 -1.6,1.6 -8,0 -1.6,-1.6 Z" fill="var(--ppw-gold)"/>
+        <circle r="1.6" fill="var(--ppw-wine)"/>
+      </g>
+      <circle cx="24" cy="4" r="1.4" fill="var(--ppw-gold)"/>
+      <circle cx="4" cy="24" r="1.4" fill="var(--ppw-gold)"/>
+    </svg>
+  </div>
+  <div class="ppw-corner ppw-corner-bl" aria-hidden="true">
+    <svg viewBox="0 0 46 46" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 24 C4 12, 12 4, 24 4" fill="none" stroke="var(--ppw-gold)" stroke-width="1.6"/>
+      <path d="M4 16 C4 9, 9 4, 16 4" fill="none" stroke="var(--ppw-gold)" stroke-width="1"/>
+      <g transform="translate(11,11)">
+        <path d="M0,-8 1.6,-1.6 8,0 1.6,1.6 0,8 -1.6,1.6 -8,0 -1.6,-1.6 Z" fill="var(--ppw-gold)"/>
+        <circle r="1.6" fill="var(--ppw-wine)"/>
+      </g>
+      <circle cx="24" cy="4" r="1.4" fill="var(--ppw-gold)"/>
+      <circle cx="4" cy="24" r="1.4" fill="var(--ppw-gold)"/>
+    </svg>
+  </div>
+  <div class="ppw-corner ppw-corner-br" aria-hidden="true">
+    <svg viewBox="0 0 46 46" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 24 C4 12, 12 4, 24 4" fill="none" stroke="var(--ppw-gold)" stroke-width="1.6"/>
+      <path d="M4 16 C4 9, 9 4, 16 4" fill="none" stroke="var(--ppw-gold)" stroke-width="1"/>
+      <g transform="translate(11,11)">
+        <path d="M0,-8 1.6,-1.6 8,0 1.6,1.6 0,8 -1.6,1.6 -8,0 -1.6,-1.6 Z" fill="var(--ppw-gold)"/>
+        <circle r="1.6" fill="var(--ppw-wine)"/>
+      </g>
+      <circle cx="24" cy="4" r="1.4" fill="var(--ppw-gold)"/>
+      <circle cx="4" cy="24" r="1.4" fill="var(--ppw-gold)"/>
+    </svg>
+  </div>
 
   <p class="ppw-eyebrow">Pluto Phases</p>
   <h2 class="ppw-title">What Was Happening?</h2>
@@ -493,7 +569,7 @@
         <span class="ppw-seal-icon" id="ppw-icon-idle">
           <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M4 40 C 12 20, 20 20, 26 32 S 40 44, 46 24 S 56 12, 60 24" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
-            <text x="32" y="52" text-anchor="middle" font-size="20" fill="currentColor" font-family="Georgia, serif">&#9807;</text>
+            <text x="32" y="52" text-anchor="middle" font-size="20" fill="currentColor" font-family="Georgia, serif">&#9799;</text>
           </svg>
         </span>
         <span class="ppw-seal-icon ppw-hidden" id="ppw-icon-loading">
@@ -512,14 +588,18 @@
   <p class="ppw-disclaimer">
     For entertainment and personal reflection only &mdash; not scientifically validated, not a
     predictor of real outcomes, and not a substitute for professional medical, legal, or
-    financial advice.
+    financial advice. Read our <a href="disclaimer.html" target="_blank" rel="noopener">Disclaimer</a>
+    and <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.
   </p>
 
 </div>
 
-<script src="pluto-engine.js"></script>
+<script src="pluto-client.js"></script>
 <script>
 (function () {
+  // ---- REQUIRED: your deployed Cloudflare Worker URL (see README.md) ----
+  var WORKER_URL = "https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev/";
+
   // ---- Fill these in once you have an EmailJS account (free tier is enough) ----
   // Sign up at https://www.emailjs.com, connect an email service, create a
   // template with variables: {{interest}} {{summary}}, then paste the IDs below.
@@ -531,16 +611,8 @@
   }
 
   var OFFERS = {
-    report: {
-      title: "Pluto Phases Transit Report",
-      price: "$60",
-      url: "https://form.jotform.com/253463431263049"
-    },
-    consultation: {
-      title: "Consultation / General Reading",
-      price: "$60",
-      url: "https://form.jotform.com/253463431263049"
-    },
+    report: { title: "Pluto Phases Transit Report", price: "$60" },
+    consultation: { title: "Consultation / General Reading", price: "$60" },
     kindle: {
       title: "Kindle eBooks",
       price: "$60",
@@ -583,7 +655,7 @@
     if (!place) { geoStatus.textContent = "Enter a place first."; geoStatus.className = "ppw-geo-status ppw-err"; return; }
     geoStatus.textContent = "Searching...";
     geoStatus.className = "ppw-geo-status";
-    window.PlutoPhasesEngine.geocodePlace(place).then(function (loc) {
+    window.PlutoPhasesClient.geocodePlace(place).then(function (loc) {
       resolvedLat = loc.latitude; resolvedLon = loc.longitude; resolvedPlaceName = loc.displayName;
       geoStatus.textContent = "Found: " + loc.displayName + " (" + loc.latitude.toFixed(3) + ", " + loc.longitude.toFixed(3) + ")";
       geoStatus.className = "ppw-geo-status ppw-ok";
@@ -605,52 +677,59 @@
 
   function renderResults(r) {
     var html = "";
-    html += '<h3>The Era You Were In</h3>';
-    html += '<div class="ppw-era-banner">On ' + fmtDate(r.eventDate) + ', you were living through the <strong>' +
+    html += '<div class="ppw-translate-bar">' +
+      '<label for="ppw-lang-select">Translate this reading:</label>' +
+      '<select id="ppw-lang-select">' +
+      '<option value="en">English (original)</option>' +
+      '<option value="es">Spanish</option>' +
+      '<option value="fr">French</option>' +
+      '<option value="de">German</option>' +
+      '<option value="pt">Portuguese</option>' +
+      '<option value="it">Italian</option>' +
+      '<option value="hi">Hindi</option>' +
+      '<option value="ar">Arabic</option>' +
+      '<option value="zh">Chinese (Simplified)</option>' +
+      '</select>' +
+      '<button type="button" id="ppw-translate-btn">Translate</button>' +
+      '<span class="ppw-translate-status" id="ppw-translate-status"></span>' +
+      '</div>';
+
+    html += '<h3 class="ppw-i18n">The Era You Were In</h3>';
+    html += '<div class="ppw-era-banner ppw-i18n">On ' + fmtDate(r.eventDate) + ', you were living through the <strong>' +
       r.era.sign + ' Pluto Phase</strong> (' + r.era.startYear + '&ndash;' + r.era.endYear + ').</div>';
 
     html += '<div class="ppw-house-dominant">';
-    html += '<h3>Your Everyday Pattern</h3>';
-    html += '<p class="ppw-house-lede">This is the backbone of your reading &mdash; how this era shapes both your day-to-day nature and your career, spelled out with real examples.</p>';
-    html += '<div class="ppw-house-card">' +
-      '<h4>Your General Energy</h4>' +
+    html += '<h3 class="ppw-i18n">Your Core Pattern</h3>';
+    html += '<p class="ppw-house-lede ppw-i18n">This is the heart of your reading &mdash; drawn directly from the Pluto Phases system\u2019s own themes for this era, stated plainly rather than softened.</p>';
+    html += '<div class="ppw-house-card ppw-house-card-primary">' +
+      '<h4 class="ppw-i18n">Your Everyday Identity</h4>' +
       '<span class="ppw-house-sign">' + r.housesContent.first.sign + ' in the 1st House</span>' +
-      '<p class="ppw-trait">This tends to make you ' + r.housesContent.first.trait + '.</p>' +
-      '<blockquote class="ppw-example">' + r.housesContent.first.example + '</blockquote>' +
+      '<span class="ppw-house-set">Set ' + r.housesContent.first.setLetter + ' &middot; Number ' + r.housesContent.first.number +
+        ' &middot; ' + r.housesContent.first.color.charAt(0).toUpperCase() + r.housesContent.first.color.slice(1) +
+        ' &middot; ' + r.housesContent.first.keywords.join(", ") + '</span>' +
+      '<p class="ppw-house-content ppw-i18n">' + r.housesContent.first.content + '</p>' +
       '</div>';
     html += '<div class="ppw-house-card">' +
-      '<h4>Your Career &amp; Public Life</h4>' +
+      '<h4 class="ppw-i18n">Your Career &amp; Public Life</h4>' +
       '<span class="ppw-house-sign">' + r.housesContent.tenth.sign + ' in the 10th House</span>' +
-      '<p class="ppw-trait">Your public accomplishment tends to run through ' + r.housesContent.tenth.trait + '.</p>' +
-      '<blockquote class="ppw-example">' + r.housesContent.tenth.example + '</blockquote>' +
+      '<span class="ppw-house-set">Set ' + r.housesContent.tenth.setLetter + ' &middot; Number ' + r.housesContent.tenth.number +
+        ' &middot; ' + r.housesContent.tenth.color.charAt(0).toUpperCase() + r.housesContent.tenth.color.slice(1) +
+        ' &middot; ' + r.housesContent.tenth.keywords.join(", ") + '</span>' +
+      '<p class="ppw-house-content ppw-i18n">' + r.housesContent.tenth.content + '</p>' +
       '</div>';
     html += '</div>';
 
-    if (r.luck) {
-      html += '<h3>Book of Luck for This Era</h3>';
-      html += '<div class="ppw-luck-grid">';
-      html += '<div class="ppw-luck-card ppw-lucky"><h4>Favorable</h4>' +
-        '<p>Colors: ' + r.luck.lucky.colors.join(", ") + '</p>' +
-        '<p>Numbers: ' + r.luck.lucky.numbers.join(", ") + '</p>' +
-        '<p>People: ' + r.luck.lucky.people.join(", ") + '</p></div>';
-      html += '<div class="ppw-luck-card ppw-unlucky"><h4>Unfavorable</h4>' +
-        '<p>Colors: ' + r.luck.unlucky.colors.join(", ") + '</p>' +
-        '<p>Numbers: ' + r.luck.unlucky.numbers.join(", ") + '</p>' +
-        '<p>People: ' + r.luck.unlucky.people.join(", ") + '</p></div>';
-      html += '</div>';
-    }
-
-    html += '<h3>What Was Active That Day</h3>';
+    html += '<h3 class="ppw-i18n">What Was Active That Day</h3>';
     if (r.usedFallback) {
-      html += '<p class="ppw-fallback-note">No aspect window fell exactly on this date &mdash; showing the nearest exact hits instead.</p>';
+      html += '<p class="ppw-fallback-note ppw-i18n">No aspect window fell exactly on this date &mdash; showing the nearest exact hits instead.</p>';
     }
     r.hits.forEach(function (h, i) {
       var uid = "ppw-hit-" + i;
       html += '<div class="ppw-hit-card">';
-      html += '<div class="ppw-hit-head">' + fmtDate(h.date) + ' &mdash; Pluto&minus;135&deg; ' + h.aspectLabel + ' natal ' + h.natalPointName + '</div>';
-      html += '<div class="ppw-hit-window">Active window: ' + fmtDate(h.windowStartDate) + ' to ' + fmtDate(h.windowEndDate) +
+      html += '<div class="ppw-hit-head ppw-i18n">' + fmtDate(h.date) + ' &mdash; Pluto&minus;135&deg; ' + h.aspectLabel + ' natal ' + h.natalPointName + '</div>';
+      html += '<div class="ppw-hit-window ppw-i18n">Active window: ' + fmtDate(h.windowStartDate) + ' to ' + fmtDate(h.windowEndDate) +
         ' (may shift roughly &plusmn;' + h.uncertaintyDays + ' days due to birth-time precision)</div>';
-      html += '<div class="ppw-hit-text ppw-clamped" id="' + uid + '">' + h.interpretation + '</div>';
+      html += '<div class="ppw-hit-text ppw-clamped ppw-i18n" id="' + uid + '">' + h.interpretation + '</div>';
       html += '<button type="button" class="ppw-expand" data-target="' + uid + '">Read the full reading</button>';
       html += '</div>';
     });
@@ -668,7 +747,80 @@
     });
 
     wireOffers();
+    wireTranslate();
     resultsEl.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  // ============================================================
+  // Translation (MyMemory API — free, no key, best-effort machine
+  // translation of the OUTPUT reading only; the form itself stays in
+  // English). Long text is split on sentence boundaries into ~450-char
+  // chunks since MyMemory's free anonymous tier caps request length.
+  // ============================================================
+  function chunkText(text, maxLen) {
+    var sentences = text.split(/(?<=[.!?])\s+/);
+    var chunks = [];
+    var current = "";
+    sentences.forEach(function (s) {
+      if ((current + " " + s).trim().length > maxLen && current) {
+        chunks.push(current.trim());
+        current = s;
+      } else {
+        current = (current + " " + s).trim();
+      }
+    });
+    if (current) chunks.push(current);
+    return chunks.length ? chunks : [text];
+  }
+  function myMemoryTranslate(text, targetLang) {
+    var url = "https://api.mymemory.translated.net/get?q=" + encodeURIComponent(text) + "&langpair=en|" + targetLang;
+    return fetch(url).then(function (r) { return r.json(); }).then(function (data) {
+      if (data && data.responseData && data.responseData.translatedText) {
+        return data.responseData.translatedText;
+      }
+      throw new Error("Translation failed");
+    });
+  }
+  function translateLongText(text, targetLang) {
+    var chunks = chunkText(text, 450);
+    return chunks.reduce(function (chain, chunk) {
+      return chain.then(function (acc) {
+        return myMemoryTranslate(chunk, targetLang).then(function (t) { return acc.concat([t]); });
+      });
+    }, Promise.resolve([])).then(function (parts) { return parts.join(" "); });
+  }
+
+  function wireTranslate() {
+    var select = document.getElementById("ppw-lang-select");
+    var btn = document.getElementById("ppw-translate-btn");
+    var status = document.getElementById("ppw-translate-status");
+    btn.addEventListener("click", function () {
+      var lang = select.value;
+      var elements = resultsEl.querySelectorAll(".ppw-i18n");
+      if (lang === "en") {
+        elements.forEach(function (el) {
+          if (el.dataset.ppwOriginal !== undefined) el.innerHTML = el.dataset.ppwOriginal;
+        });
+        status.textContent = "";
+        return;
+      }
+      btn.disabled = true;
+      status.textContent = "Translating\u2026";
+      var jobs = [];
+      elements.forEach(function (el) {
+        if (el.dataset.ppwOriginal === undefined) el.dataset.ppwOriginal = el.innerHTML;
+        jobs.push(
+          translateLongText(el.textContent, lang).then(function (translated) {
+            el.textContent = translated;
+          }).catch(function () { /* leave this element untranslated on failure */ })
+        );
+      });
+      Promise.all(jobs).then(function () {
+        status.textContent = "Translated (machine translation \u2014 quality may vary).";
+      }).then(function () {
+        btn.disabled = false;
+      });
+    });
   }
 
   function renderOffersHtml() {
@@ -677,11 +829,11 @@
     html += '<p class="ppw-offers-lede">This page traced one moment. Your full chart holds dozens more &mdash; here\'s how to explore the rest with Sanju Paison.</p>';
     html += '<div class="ppw-offer-list">';
     html += offerItemHtml("report", OFFERS.report.title, OFFERS.report.price,
-      "The full 75-page report mapping 60 years of your major turning points, transit dates, timelines, and guidance.");
+      "The full 75-page report mapping 60 years of your major turning points, transit dates, timelines, and guidance. Select this and Sanju will reach out to arrange it.");
     html += offerItemHtml("consultation", OFFERS.consultation.title, OFFERS.consultation.price,
-      "A 30-minute live chat with Sanju Paison to talk through where you are and what's ahead.");
+      "A 30-minute live chat with Sanju Paison to talk through where you are and what's ahead. Select this and Sanju will reach out to arrange it.");
     html += offerItemHtml("kindle", OFFERS.kindle.title, OFFERS.kindle.price,
-      "12 titles covering Pluto Phases, location astrology, compatibility, and an astrology short story.");
+      "12 titles covering Pluto Phases, location astrology, compatibility, and an astrology short story \u2014 available now on Amazon.");
     html += '</div>';
     html += '<div class="ppw-offers-submit-wrap">' +
       '<button type="button" class="ppw-offers-btn" id="ppw-offers-btn">Continue</button>' +
@@ -704,6 +856,9 @@
     var status = document.getElementById("ppw-offers-status");
     var linksEl = document.getElementById("ppw-offers-links");
     btn.addEventListener("click", function () {
+      status.textContent = "";
+      linksEl.innerHTML = "";
+
       var selected = ["report", "consultation", "kindle"].filter(function (k) {
         return document.getElementById("ppw-offer-" + k).checked;
       });
@@ -711,36 +866,40 @@
         status.textContent = "Select at least one option above first.";
         return;
       }
-      var needsLead = selected.indexOf("report") !== -1 || selected.indexOf("consultation") !== -1;
-      linksEl.innerHTML = "";
-      selected.forEach(function (k) {
+
+      var leadKeys = selected.filter(function (k) { return k === "report" || k === "consultation"; });
+      var wantsKindle = selected.indexOf("kindle") !== -1;
+
+      // Kindle needs no personal details — show its button immediately,
+      // independent of whether Report/Consultation were also picked.
+      if (wantsKindle) {
         var a = document.createElement("a");
         a.className = "ppw-cta-btn";
-        a.href = OFFERS[k].url;
+        a.href = OFFERS.kindle.url;
         a.target = "_blank";
         a.rel = "noopener";
-        a.textContent = "Open " + OFFERS[k].title;
+        a.textContent = "View Kindle eBooks";
         linksEl.appendChild(a);
-      });
-
-      if (!needsLead) {
-        status.textContent = "";
-        return;
       }
 
+      // Report and/or Consultation: no external form — just send the
+      // visitor's details to Sanju by email and confirm to the visitor.
+      if (leadKeys.length === 0) return;
+
+      var interestLabel = leadKeys.map(function (k) { return OFFERS[k].title; }).join(" + ");
       btn.disabled = true;
       status.textContent = "Sending your details to Sanju...";
-      var interestLabel = selected.map(function (k) { return OFFERS[k].title; }).join(" + ");
-      var summary = window.PlutoPhasesEngine.buildLeadSummary(lastInput, lastResult, interestLabel, resolvedPlaceName);
+      var summary = window.PlutoPhasesClient.buildLeadSummary(lastInput, lastResult, interestLabel, resolvedPlaceName);
 
       var sendPromise = (window.emailjs && EMAILJS_PUBLIC_KEY.indexOf("YOUR_") !== 0)
         ? window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { interest: interestLabel, summary: summary })
         : Promise.reject(new Error("Email not configured"));
 
       sendPromise.then(function () {
-        status.textContent = "Your details have been sent. Continue below to complete your request.";
+        status.textContent = "Your details have been sent to Sanju for your " + interestLabel +
+          " request. He'll be in touch with you directly.";
       }).catch(function () {
-        status.textContent = "Please mention your birth and event details on the next page \u2014 we couldn't send them automatically.";
+        status.textContent = "We couldn't send your details automatically just now \u2014 please try again in a moment, or reach out directly to arrange your " + interestLabel + ".";
       }).then(function () {
         btn.disabled = false;
       });
@@ -780,16 +939,15 @@
     };
 
     setBusy(true);
-    window.PlutoPhasesEngine.loadData().then(function (data) {
-      try {
-        var r = window.PlutoPhasesEngine.explainEvent(input, data);
-        lastInput = input; lastResult = r;
-        renderResults(r);
-      } catch (err) {
-        showError(err.message || "Something went wrong computing your reading.");
+    window.PlutoPhasesClient.explainEventViaWorker(input, WORKER_URL).then(function (r) {
+      lastInput = input; lastResult = r;
+      renderResults(r);
+    }).catch(function (err) {
+      if (err && err.rateLimited) {
+        showError(err.message);
+      } else {
+        showError((err && err.message) || "Could not compute a reading right now. Please check your connection and try again.");
       }
-    }).catch(function () {
-      showError("Could not load the astrological data. Please check your connection and try again.");
     }).then(function () {
       setBusy(false);
     });
