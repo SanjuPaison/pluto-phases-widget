@@ -6,7 +6,7 @@
 <title>Pluto Phases — What Was Happening?</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
 <style>
   html { font-size: 19px; }
   html, body {
@@ -388,6 +388,13 @@
     color: #e6dcc2; font-size: 1.05rem;
   }
   #pluto-phases-widget .ppw-offer-list { display: flex; flex-direction: column; gap: 0.9rem; margin-bottom: 1.6rem; }
+  #pluto-phases-widget .ppw-offers-email { max-width: 380px; margin: 0 auto 1.4rem; }
+  #pluto-phases-widget .ppw-offers-email label {
+    color: #d9cfb2; text-transform: none; letter-spacing: 0; font-size: 0.95rem; text-align: center;
+  }
+  #pluto-phases-widget .ppw-offers-email input {
+    background: #fbf6e8; border: 1px solid var(--ppw-parchment-shadow);
+  }
   #pluto-phases-widget .ppw-offer-item {
     display: flex; gap: 0.85rem; align-items: flex-start;
     padding: 0.9rem 1.1rem;
@@ -509,6 +516,20 @@
 
   <form id="ppw-form">
     <fieldset>
+      <legend>The Event</legend>
+      <div class="ppw-row">
+        <div class="ppw-field">
+          <label for="ppw-event-date">Event date</label>
+          <input type="date" id="ppw-event-date" required min="1940-01-01" max="2060-12-31">
+        </div>
+        <div class="ppw-field ppw-wide">
+          <label for="ppw-event-desc">Briefly, what happened?</label>
+          <textarea id="ppw-event-desc" placeholder="e.g. I got engaged, or I was let go from my job, or I moved abroad..."></textarea>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
       <legend>Your Birth</legend>
       <div class="ppw-row">
         <div class="ppw-field">
@@ -550,20 +571,6 @@
       </div>
     </fieldset>
 
-    <fieldset>
-      <legend>The Event</legend>
-      <div class="ppw-row">
-        <div class="ppw-field">
-          <label for="ppw-event-date">Event date</label>
-          <input type="date" id="ppw-event-date" required min="1940-01-01" max="2060-12-31">
-        </div>
-        <div class="ppw-field ppw-wide">
-          <label for="ppw-event-desc">Briefly, what happened?</label>
-          <textarea id="ppw-event-desc" placeholder="e.g. I got engaged, or I was let go from my job, or I moved abroad..."></textarea>
-        </div>
-      </div>
-    </fieldset>
-
     <div class="ppw-submit-wrap">
       <button type="submit" class="ppw-seal" id="ppw-submit">
         <span class="ppw-seal-icon" id="ppw-icon-idle">
@@ -598,17 +605,31 @@
 <script>
 (function () {
   // ---- REQUIRED: your deployed Cloudflare Worker URL (see README.md) ----
-  var WORKER_URL = "https://polished-pine-8d1f.sanjupaison.workers.dev/";
+  var WORKER_URL = "https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev/";
 
-  // ---- Fill these in once you have an EmailJS account (free tier is enough) ----
-  // Sign up at https://www.emailjs.com, connect an email service, create a
-  // template with variables: {{interest}} {{summary}}, then paste the IDs below.
-  var EMAILJS_PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY";
-  var EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
-  var EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID";
-  if (window.emailjs && EMAILJS_PUBLIC_KEY.indexOf("YOUR_") !== 0) {
-    window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
-  }
+  // ---- JotForm lead-capture form (Report / Consultation requests) ----
+  // Form: https://form.jotform.com/262381784349064
+  // All fields (Birth Date, Birth Time, Birth Place, Gender, Email,
+  // Which service) were created together in a single form-creation pass,
+  // and their prefill parameter names were confirmed working end-to-end
+  // by direct testing. If you ever rebuild this form from scratch, note
+  // that JotForm's prefill key is the field's "name" property exactly as
+  // shown in that form's own page-source metadata (the
+  // JotForm.paymentExtrasOnTheFly(...) line) -- not the qid you might
+  // guess, and not the rendered <input name="..."> attribute either,
+  // which can differ from the real prefill key.
+  var JOTFORM_ID = "262381784349064";
+  var JOTFORM_FIELDS = {
+    birthDateMonth: "q2_datetime0[month]",
+    birthDateDay: "q2_datetime0[day]",
+    birthDateYear: "q2_datetime0[year]",
+    birthTimeInput: "q3_time1[timeInput]",
+    birthTimeAmpm: "q3_time1[ampm]",
+    birthPlace: "q4_textbox2",
+    gender: "q5_radio3",
+    email: "q6_email4",
+    service: "q7_checkbox5"
+  };
 
   var OFFERS = {
     report: { title: "Pluto Phases Transit Report", price: "$60" },
@@ -829,12 +850,16 @@
     html += '<p class="ppw-offers-lede">This page traced one moment. Your full chart holds dozens more &mdash; here\'s how to explore the rest with Sanju Paison.</p>';
     html += '<div class="ppw-offer-list">';
     html += offerItemHtml("report", OFFERS.report.title, OFFERS.report.price,
-      "The full 75-page report mapping 60 years of your major turning points, transit dates, timelines, and guidance. Select this and Sanju will reach out to arrange it.");
+      "The full 75-page report mapping 60 years of your major turning points, transit dates, timelines, and guidance.");
     html += offerItemHtml("consultation", OFFERS.consultation.title, OFFERS.consultation.price,
-      "A 30-minute live chat with Sanju Paison to talk through where you are and what's ahead. Select this and Sanju will reach out to arrange it.");
+      "A 30-minute live chat with Sanju Paison to talk through where you are and what's ahead.");
     html += offerItemHtml("kindle", OFFERS.kindle.title, OFFERS.kindle.price,
       "12 titles covering Pluto Phases, location astrology, compatibility, and an astrology short story \u2014 available now on Amazon.");
     html += '</div>';
+    html += '<div class="ppw-offers-email" id="ppw-offers-email-wrap">' +
+      '<label for="ppw-offers-email">Email (needed for Report or Consultation requests)</label>' +
+      '<input type="email" id="ppw-offers-email" placeholder="you@example.com">' +
+      '</div>';
     html += '<div class="ppw-offers-submit-wrap">' +
       '<button type="button" class="ppw-offers-btn" id="ppw-offers-btn">Continue</button>' +
       '<div class="ppw-offers-status" id="ppw-offers-status"></div>' +
@@ -851,10 +876,40 @@
       '</div>';
   }
 
+  // Builds a JotForm prefill URL so the visitor arrives with their birth
+  // details, email, and service selection already filled in — they only
+  // need to glance at it and hit Submit on JotForm's own page.
+  function buildJotformUrl(input, email, leadKeys) {
+    var hour24 = input.birthHour;
+    var ampm = hour24 >= 12 ? "PM" : "AM";
+    var hour12 = hour24 % 12;
+    if (hour12 === 0) hour12 = 12;
+
+    var params = [];
+    function add(key, value) { params.push(encodeURIComponent(key) + "=" + encodeURIComponent(value)); }
+
+    var monthStr = input.birthMonth < 10 ? "0" + input.birthMonth : String(input.birthMonth);
+    var dayStr = input.birthDay < 10 ? "0" + input.birthDay : String(input.birthDay);
+    add(JOTFORM_FIELDS.birthDateMonth, monthStr);
+    add(JOTFORM_FIELDS.birthDateDay, dayStr);
+    add(JOTFORM_FIELDS.birthDateYear, input.birthYear);
+    var hourStr = hour12 < 10 ? "0" + hour12 : String(hour12);
+    var minStr = input.birthMinute < 10 ? "0" + input.birthMinute : String(input.birthMinute);
+    add(JOTFORM_FIELDS.birthTimeInput, hourStr + ":" + minStr);
+    add(JOTFORM_FIELDS.birthTimeAmpm, ampm);
+    add(JOTFORM_FIELDS.birthPlace, resolvedPlaceName || (input.latitude + ", " + input.longitude));
+    add(JOTFORM_FIELDS.gender, input.gender);
+    add(JOTFORM_FIELDS.email, email);
+    leadKeys.forEach(function (k) { add(JOTFORM_FIELDS.service, OFFERS[k].title); });
+
+    return "https://form.jotform.com/" + JOTFORM_ID + "?" + params.join("&");
+  }
+
   function wireOffers() {
     var btn = document.getElementById("ppw-offers-btn");
     var status = document.getElementById("ppw-offers-status");
     var linksEl = document.getElementById("ppw-offers-links");
+    var emailInput = document.getElementById("ppw-offers-email");
     btn.addEventListener("click", function () {
       status.textContent = "";
       linksEl.innerHTML = "";
@@ -882,27 +937,28 @@
         linksEl.appendChild(a);
       }
 
-      // Report and/or Consultation: no external form — just send the
-      // visitor's details to Sanju by email and confirm to the visitor.
+      // Report and/or Consultation: open a pre-filled JotForm with the
+      // visitor's birth details, email, and service selection already in
+      // place — they just review and hit Submit on JotForm's own page.
       if (leadKeys.length === 0) return;
 
-      var interestLabel = leadKeys.map(function (k) { return OFFERS[k].title; }).join(" + ");
-      btn.disabled = true;
-      status.textContent = "Sending your details to Sanju...";
-      var summary = window.PlutoPhasesClient.buildLeadSummary(lastInput, lastResult, interestLabel, resolvedPlaceName);
+      var email = (emailInput.value || "").trim();
+      if (!email || email.indexOf("@") === -1) {
+        status.textContent = "Please enter a valid email address for your " +
+          leadKeys.map(function (k) { return OFFERS[k].title; }).join(" + ") + " request.";
+        return;
+      }
 
-      var sendPromise = (window.emailjs && EMAILJS_PUBLIC_KEY.indexOf("YOUR_") !== 0)
-        ? window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { interest: interestLabel, summary: summary })
-        : Promise.reject(new Error("Email not configured"));
-
-      sendPromise.then(function () {
-        status.textContent = "Your details have been sent to Sanju for your " + interestLabel +
-          " request. He'll be in touch with you directly.";
-      }).catch(function () {
-        status.textContent = "We couldn't send your details automatically just now \u2014 please try again in a moment, or reach out directly to arrange your " + interestLabel + ".";
-      }).then(function () {
-        btn.disabled = false;
-      });
+      var url = buildJotformUrl(lastInput, email, leadKeys);
+      var jf = document.createElement("a");
+      jf.className = "ppw-cta-btn";
+      jf.href = url;
+      jf.target = "_blank";
+      jf.rel = "noopener";
+      jf.textContent = "Open Your Pre-Filled Request";
+      linksEl.appendChild(jf);
+      status.textContent = "Your details are pre-filled \u2014 just review and hit Submit on the form that opens.";
+      window.open(url, "_blank", "noopener");
     });
   }
 
