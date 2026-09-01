@@ -809,7 +809,9 @@
     add(JOTFORM_FIELDS.birthPlace, resolvedPlaceName || (input.latitude + ", " + input.longitude));
     add(JOTFORM_FIELDS.gender, input.gender);
     add(JOTFORM_FIELDS.email, email);
-    leadKeys.forEach(function (k) { add(JOTFORM_FIELDS.service, OFFERS[k].title); });
+    if (leadKeys.length > 0) {
+      add(JOTFORM_FIELDS.service, leadKeys.map(function (k) { return OFFERS[k].title; }).join(","));
+    }
 
     return "https://form.jotform.com/" + JOTFORM_ID + "?" + params.join("&");
   }
