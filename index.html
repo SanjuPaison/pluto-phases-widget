@@ -91,8 +91,6 @@
     color: var(--text-faint);
     margin-bottom: 0.35rem;
   }
-  #pluto-phases-widget input[type="date"],
-  #pluto-phases-widget input[type="time"],
   #pluto-phases-widget input[type="text"],
   #pluto-phases-widget input[type="email"],
   #pluto-phases-widget input[type="number"],
@@ -106,7 +104,22 @@
     border: 1px solid var(--card-border);
     border-radius: var(--radius-sm);
     color: var(--text-hi);
-    color-scheme: dark;
+  }
+  #pluto-phases-widget .ppw-dob-row,
+  #pluto-phases-widget .ppw-tob-row {
+    display: flex;
+    gap: 6px;
+  }
+  #pluto-phases-widget .ppw-dob-row select,
+  #pluto-phases-widget .ppw-tob-row select {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    padding: 0.6rem 0.4rem;
+    background: var(--bg-2);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-hi);
   }
   #pluto-phases-widget input:focus,
   #pluto-phases-widget select:focus,
@@ -428,8 +441,12 @@
       <legend>The Event</legend>
       <div class="ppw-row">
         <div class="ppw-field">
-          <label for="ppw-event-date">Event date</label>
-          <input type="date" id="ppw-event-date" required min="1940-01-01" max="2060-12-31">
+          <label for="ppw-event-month">Event date</label>
+          <div class="ppw-dob-row">
+            <select id="ppw-event-month" required><option value="" disabled selected>Month</option></select>
+            <select id="ppw-event-day" required><option value="" disabled selected>Day</option></select>
+            <select id="ppw-event-year" required><option value="" disabled selected>Year</option></select>
+          </div>
         </div>
         <div class="ppw-field ppw-wide">
           <label for="ppw-event-desc">Briefly, what happened?</label>
@@ -442,12 +459,20 @@
       <legend>Your Birth</legend>
       <div class="ppw-row">
         <div class="ppw-field">
-          <label for="ppw-birth-date">Birth date</label>
-          <input type="date" id="ppw-birth-date" required min="1940-01-01" max="2060-12-31">
+          <label for="ppw-birth-month">Birth date</label>
+          <div class="ppw-dob-row">
+            <select id="ppw-birth-month" required><option value="" disabled selected>Month</option></select>
+            <select id="ppw-birth-day" required><option value="" disabled selected>Day</option></select>
+            <select id="ppw-birth-year" required><option value="" disabled selected>Year</option></select>
+          </div>
         </div>
         <div class="ppw-field">
-          <label for="ppw-birth-time">Birth time</label>
-          <input type="time" id="ppw-birth-time" value="12:00">
+          <label for="ppw-birth-hour">Birth time</label>
+          <div class="ppw-tob-row">
+            <select id="ppw-birth-hour"><option value="12">12</option></select>
+            <select id="ppw-birth-minute"><option value="0">00</option></select>
+            <select id="ppw-birth-ampm"><option value="PM">PM</option></select>
+          </div>
           <div class="ppw-checkbox-row">
             <input type="checkbox" id="ppw-time-unknown">
             <label for="ppw-time-unknown" style="margin:0;text-transform:none;letter-spacing:0;">I don't know my exact birth time</label>
@@ -559,8 +584,67 @@
   var geoBtn = document.getElementById("ppw-geo-btn");
   var geoStatus = document.getElementById("ppw-geo-status");
   var timeUnknownBox = document.getElementById("ppw-time-unknown");
-  var timeInput = document.getElementById("ppw-birth-time");
+  var birthHourSelect = document.getElementById("ppw-birth-hour");
+  var birthMinuteSelect = document.getElementById("ppw-birth-minute");
+  var birthAmpmSelect = document.getElementById("ppw-birth-ampm");
+  var eventMonthSelect = document.getElementById("ppw-event-month");
+  var eventDaySelect = document.getElementById("ppw-event-day");
+  var eventYearSelect = document.getElementById("ppw-event-year");
+  var birthMonthSelect = document.getElementById("ppw-birth-month");
+  var birthDaySelect = document.getElementById("ppw-birth-day");
+  var birthYearSelect = document.getElementById("ppw-birth-year");
   var utcSelect = document.getElementById("ppw-utc-offset");
+
+  function ppwPad(n) { return n < 10 ? "0" + n : "" + n; }
+  var PPW_MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+  function ppwFillDateSelects(monthSel, daySel, yearSel, minYear, maxYear) {
+    monthSel.innerHTML = '<option value="" disabled selected>Month</option>';
+    PPW_MONTHS.forEach(function (name, i) {
+      var opt = document.createElement("option");
+      opt.value = i + 1; opt.textContent = name;
+      monthSel.appendChild(opt);
+    });
+    daySel.innerHTML = '<option value="" disabled selected>Day</option>';
+    for (var d = 1; d <= 31; d++) {
+      var opt = document.createElement("option");
+      opt.value = d; opt.textContent = d;
+      daySel.appendChild(opt);
+    }
+    yearSel.innerHTML = '<option value="" disabled selected>Year</option>';
+    for (var y = maxYear; y >= minYear; y--) {
+      var opt = document.createElement("option");
+      opt.value = y; opt.textContent = y;
+      yearSel.appendChild(opt);
+    }
+  }
+  ppwFillDateSelects(eventMonthSelect, eventDaySelect, eventYearSelect, 1940, 2060);
+  ppwFillDateSelects(birthMonthSelect, birthDaySelect, birthYearSelect, 1940, 2060);
+
+  function ppwFillTimeSelects() {
+    birthHourSelect.innerHTML = "";
+    for (var h = 1; h <= 12; h++) {
+      var opt = document.createElement("option");
+      opt.value = h; opt.textContent = ppwPad(h);
+      if (h === 12) opt.selected = true;
+      birthHourSelect.appendChild(opt);
+    }
+    birthMinuteSelect.innerHTML = "";
+    for (var m = 0; m <= 59; m++) {
+      var opt = document.createElement("option");
+      opt.value = m; opt.textContent = ppwPad(m);
+      if (m === 0) opt.selected = true;
+      birthMinuteSelect.appendChild(opt);
+    }
+    birthAmpmSelect.innerHTML = "";
+    ["AM", "PM"].forEach(function (p) {
+      var opt = document.createElement("option");
+      opt.value = p; opt.textContent = p;
+      if (p === "PM") opt.selected = true;
+      birthAmpmSelect.appendChild(opt);
+    });
+  }
+  ppwFillTimeSelects();
 
   var resolvedLat = null, resolvedLon = null, resolvedPlaceName = null;
   var lastInput = null, lastResult = null;
@@ -576,8 +660,15 @@
   });
 
   timeUnknownBox.addEventListener("change", function () {
-    timeInput.disabled = timeUnknownBox.checked;
-    if (timeUnknownBox.checked) timeInput.value = "12:00";
+    var disabled = timeUnknownBox.checked;
+    birthHourSelect.disabled = disabled;
+    birthMinuteSelect.disabled = disabled;
+    birthAmpmSelect.disabled = disabled;
+    if (disabled) {
+      birthHourSelect.value = "12";
+      birthMinuteSelect.value = "0";
+      birthAmpmSelect.value = "PM";
+    }
   });
 
   geoBtn.addEventListener("click", function () {
@@ -878,28 +969,39 @@
     clearError();
     resultsEl.innerHTML = "";
 
-    var birthDateVal = document.getElementById("ppw-birth-date").value;
-    var eventDateVal = document.getElementById("ppw-event-date").value;
-    if (!birthDateVal || !eventDateVal) { showError("Please provide both a birth date and an event date."); return; }
+    if (!birthMonthSelect.value || !birthDaySelect.value || !birthYearSelect.value ||
+        !eventMonthSelect.value || !eventDaySelect.value || !eventYearSelect.value) {
+      showError("Please provide both a birth date and an event date.");
+      return;
+    }
     if (resolvedLat === null || resolvedLon === null) {
       showError("Please locate your birth place using the \"Locate\" button before revealing your reading.");
       return;
     }
 
-    var timeVal = timeUnknownBox.checked ? "12:00" : (timeInput.value || "12:00");
-    var bParts = birthDateVal.split("-").map(Number);
-    var eParts = eventDateVal.split("-").map(Number);
-    var tParts = timeVal.split(":").map(Number);
+    var hour24;
+    var minute;
+    if (timeUnknownBox.checked) {
+      hour24 = 12; minute = 0;
+    } else {
+      hour24 = parseInt(birthHourSelect.value, 10) % 12;
+      if (birthAmpmSelect.value === "PM") hour24 += 12;
+      minute = parseInt(birthMinuteSelect.value, 10);
+    }
     var gender = document.querySelector('input[name="ppw-gender"]:checked').value;
     var personPoint = gender === "Male" ? "Sun" : "Moon";
 
     var input = {
-      birthYear: bParts[0], birthMonth: bParts[1], birthDay: bParts[2],
-      birthHour: tParts[0], birthMinute: tParts[1],
+      birthYear: parseInt(birthYearSelect.value, 10),
+      birthMonth: parseInt(birthMonthSelect.value, 10),
+      birthDay: parseInt(birthDaySelect.value, 10),
+      birthHour: hour24, birthMinute: minute,
       birthTimeUnknown: timeUnknownBox.checked,
       utcOffsetHours: parseFloat(utcSelect.value),
       latitude: resolvedLat, longitude: resolvedLon,
-      eventYear: eParts[0], eventMonth: eParts[1], eventDay: eParts[2],
+      eventYear: parseInt(eventYearSelect.value, 10),
+      eventMonth: parseInt(eventMonthSelect.value, 10),
+      eventDay: parseInt(eventDaySelect.value, 10),
       description: document.getElementById("ppw-event-desc").value || "",
       personPoint: personPoint, gender: gender,
       offsetDegrees: 135, orbDegrees: 3
